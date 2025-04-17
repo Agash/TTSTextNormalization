@@ -1,9 +1,47 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+
+	  <AssemblyName>TTSTextNormalization</AssemblyName>
+	  <!-- Ensure this matches your desired assembly name -->
+	  <RootNamespace>TTSTextNormalization</RootNamespace>
+	  <!-- Ensure this matches your code namespaces -->
+
+	  <!-- === NuGet Packaging Properties === -->
+	  <PackageId>Agash.TTSTextNormalization</PackageId>
+	  <Version>0.1.0-alpha</Version>
+	  <!-- Start with an initial version. CI will override this for tagged releases. -->
+	  <Authors>Agash</Authors>
+	  <!-- Replace with your name/username -->
+	  <Company>Agash</Company>
+	  <!-- Optional: Replace with your name/org -->
+	  <Description>A .NET 9 / C# 13 class library to normalize text (emojis, currency, numbers, abbreviations) for consistent Text-to-Speech (TTS) output, tailored for chat/donation scenarios.</Description>
+	  <Copyright>Copyright (c) Agash 2024</Copyright>
+	  <!-- Update year as needed -->
+	  <PackageLicenseExpression>MIT</PackageLicenseExpression>
+	  <!-- Assumes MIT license -->
+	  <PackageProjectUrl>https://github.com/Agash/TTSTextNormalization</PackageProjectUrl>
+	  <!-- Your repo URL -->
+	  <RepositoryUrl>https://github.com/Agash/TTSTextNormalization.git</RepositoryUrl>
+	  <!-- Git URL -->
+	  <RepositoryType>git</RepositoryType>
+	  <PackageTags>tts text normalization speech synthesis stream twitch youtube chat emoji currency number abbreviation</PackageTags>
+	  <PackageReadmeFile>README.md</PackageReadmeFile>
+	  <!-- Include the README in the package -->
+	  <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+
+	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
+	  <EnablePackageValidation>true</EnablePackageValidation>
+
+	  <MinVerTagPrefix>v</MinVerTagPrefix>
+	  <!-- SourceLink Properties (for debugging into the source code) -->
+	  <PublishRepositoryUrl>true</PublishRepositoryUrl>
+	  <EmbedUntrackedSources>true</EmbedUntrackedSources>
+	  <IncludeSymbols>true</IncludeSymbols>
+	  <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,6 +50,8 @@
 
   <ItemGroup>
     <None Remove="data-by-emoji.json" />
+	  <None Include="LICENSE.txt" Pack="true" PackagePath="" />
+	  <None Include="README.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,6 +65,14 @@
   <ItemGroup>
     <PackageReference Include="Humanizer.Core" Version="2.14.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.4" />
+	  <PackageReference Include="MinVer" Version="6.0.0">
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		  <PrivateAssets>all</PrivateAssets>
+	  </PackageReference>
+	  <PackageReference Include="DotNet.ReproducibleBuilds" Version="1.2.25">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+	  </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
