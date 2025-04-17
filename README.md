@@ -1,7 +1,7 @@
 ﻿# TTSTextNormalization - Normalize Text for TTS
 
 [![NuGet Version](https://img.shields.io/nuget/v/Agash.TTSTextNormalization.svg?style=flat-square)](https://www.nuget.org/packages/Agash.TTSTextNormalization/)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/Agash/TTSTextNormalization/dotnet.yml?branch=master&style=flat-square)](https://github.com/Agash/TTSTextNormalization/actions)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/Agash/TTSTextNormalization/dotnet-publish.yml?branch=master&style=flat-square)](https://github.com/Agash/TTSTextNormalization/actions)
 
 A .NET 9 / C# 13 class library designed to normalize text containing emojis, currency symbols, numbers, abbreviations, and other non-standard elements, making it suitable for consistent and natural-sounding Text-to-Speech (TTS) synthesis across different engines (e.g., System.Speech, KokoroSharp). Specifically tailored for scenarios involving user-generated content like Twitch/YouTube chat and donations.
 
