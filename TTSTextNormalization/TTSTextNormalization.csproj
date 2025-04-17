@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\repos\TTSTextNormalization\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="data-by-emoji.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="data-by-emoji.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\repos\TTSTextNormalization\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Humanizer.Core" Version="2.14.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TTSTextNormalization.Generator\TTSTextNormalization.EmojiDataGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+</Project>

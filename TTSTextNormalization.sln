@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35931.197
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTSTextNormalization.Tests", "TTSTextNormalization.Tests\TTSTextNormalization.Tests.csproj", "{4491F975-C840-495E-A4AA-A99DBCB164AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTSTextNormalization.EmojiDataGenerator", "TTSTextNormalization.Generator\TTSTextNormalization.EmojiDataGenerator.csproj", "{E4668C02-1540-417C-8865-04CE03314C6B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTSTextNormalization", "TTSTextNormalization\TTSTextNormalization.csproj", "{1C2CA7DF-374E-FA47-469B-9751E035B2C8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4491F975-C840-495E-A4AA-A99DBCB164AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4491F975-C840-495E-A4AA-A99DBCB164AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4491F975-C840-495E-A4AA-A99DBCB164AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4491F975-C840-495E-A4AA-A99DBCB164AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4668C02-1540-417C-8865-04CE03314C6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4668C02-1540-417C-8865-04CE03314C6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4668C02-1540-417C-8865-04CE03314C6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4668C02-1540-417C-8865-04CE03314C6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C2CA7DF-374E-FA47-469B-9751E035B2C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C2CA7DF-374E-FA47-469B-9751E035B2C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C2CA7DF-374E-FA47-469B-9751E035B2C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C2CA7DF-374E-FA47-469B-9751E035B2C8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {53950FEC-997F-4537-B0E2-40090BAA342B}
+	EndGlobalSection
+EndGlobal
