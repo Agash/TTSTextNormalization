@@ -42,18 +42,18 @@ jobs:
         dotnet-version: '9.x' # Use the .NET 9 SDK
 
     - name: Restore dependencies
-      run: dotnet restore StreamWeaver.TTSTextNormalization.sln # Restore for the whole solution
+      run: dotnet restore TTSTextNormalization.sln # Restore for the whole solution
 
     - name: Build Library
       # Build the specific library project in Release config
       # Override the Version using the extracted tag version
-      run: dotnet build StreamWeaver.TTSTextNormalization/StreamWeaver.TTSTextNormalization.csproj --configuration Release --no-restore
+      run: dotnet build TTSTextNormalization/TTSTextNormalization.csproj --configuration Release --no-restore
 
     - name: Pack Library
       # Pack the specific library project
       # Use the extracted tag version again
       # Output packages to an 'artifacts' directory
-      run: dotnet pack StreamWeaver.TTSTextNormalization/StreamWeaver.TTSTextNormalization.csproj --configuration Release --no-build --output ${{ env.NuGetDirectory }}
+      run: dotnet pack TTSTextNormalization/TTSTextNormalization.csproj --configuration Release --no-build --output ${{ env.NuGetDirectory }}
 
     - uses: actions/upload-artifact@v4
       with:
