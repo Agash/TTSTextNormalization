@@ -1,4 +1,4 @@
-﻿using System; // Required for Uri
+﻿using Microsoft.Extensions.Options; // Add this using
 using System.Text.RegularExpressions;
 using TTSTextNormalization.Abstractions;
 
@@ -7,6 +7,7 @@ namespace TTSTextNormalization.Rules;
 /// <summary>
 /// Normalizes URLs found in text by replacing them with a placeholder,
 /// using Regex for initial detection and Uri.TryCreate for validation.
+/// The placeholder is configurable via <see cref="UrlRuleOptions"/>.
 /// </summary>
 public sealed partial class UrlNormalizationRule : ITextNormalizationRule
 {
@@ -14,10 +15,10 @@ public sealed partial class UrlNormalizationRule : ITextNormalizationRule
     /// <remarks>
     /// Runs after most content normalization but before final whitespace cleanup. Order: 20.
     /// </remarks>
-    public int Order => 110;
+    public int Order => 20;
 
-    private const int RegexTimeoutMilliseconds = 20;
-    private const string Placeholder = " link ";
+    private const int RegexTimeoutMilliseconds = 200;
+    private readonly string _placeholder; // Store the configured placeholder
 
     // Cache allowed schemes for performance
     private static readonly HashSet<string> AllowedSchemes = new(StringComparer.OrdinalIgnoreCase)
@@ -29,7 +30,14 @@ public sealed partial class UrlNormalizationRule : ITextNormalizationRule
     /// <summary>
     /// Initializes a new instance of the <see cref="UrlNormalizationRule"/> class.
     /// </summary>
-    public UrlNormalizationRule() { }
+    /// <param name="optionsAccessor">The configuration options.</param>
+    /// <exception cref="ArgumentNullException">Thrown if optionsAccessor is null.</exception>
+    public UrlNormalizationRule(IOptions<UrlRuleOptions> optionsAccessor)
+    {
+        ArgumentNullException.ThrowIfNull(optionsAccessor);
+        UrlRuleOptions options = optionsAccessor.Value ?? new UrlRuleOptions();
+        _placeholder = options.PlaceholderText; // Use configured placeholder
+    }
 
     /// <inheritdoc/>
     public string Apply(string inputText)
@@ -44,7 +52,7 @@ public sealed partial class UrlNormalizationRule : ITextNormalizationRule
         string currentText = inputText;
         try
         {
-            // Use the evaluator with Uri.TryCreate validation
+            // Pass the instance method as the evaluator
             currentText = PotentialUrlRegex().Replace(currentText, UrlMatchEvaluator);
         }
         catch (RegexMatchTimeoutException ex)
@@ -62,8 +70,9 @@ public sealed partial class UrlNormalizationRule : ITextNormalizationRule
 
     /// <summary>
     /// Evaluates a potential URL match using Uri.TryCreate for validation.
+    /// Uses the configured placeholder upon successful validation.
     /// </summary>
-    private static string UrlMatchEvaluator(Match match)
+    private string UrlMatchEvaluator(Match match) // Now an instance method
     {
         string potentialUrl = match.Value;
 
@@ -76,8 +85,8 @@ public sealed partial class UrlNormalizationRule : ITextNormalizationRule
         if (Uri.TryCreate(uriStringToValidate, UriKind.Absolute, out Uri? uriResult)
             && AllowedSchemes.Contains(uriResult.Scheme))
         {
-            // It's a valid HTTP/HTTPS URI, replace it.
-            return Placeholder;
+            // It's a valid HTTP/HTTPS URI, replace it with the configured placeholder.
+            return _placeholder;
         }
         else
         {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Frozen;
 using System.Text.RegularExpressions;
-using Microsoft.Extensions.Options; // Add this using
+using Microsoft.Extensions.Options;
 using TTSTextNormalization.Abstractions;
 
 namespace TTSTextNormalization.Rules;
@@ -86,7 +86,7 @@ public sealed partial class AbbreviationNormalizationRule : ITextNormalizationRu
     public AbbreviationNormalizationRule(IOptions<AbbreviationRuleOptions> optionsAccessor)
     {
         ArgumentNullException.ThrowIfNull(optionsAccessor);
-        var options = optionsAccessor.Value ?? new AbbreviationRuleOptions(); // Use default options if null
+        AbbreviationRuleOptions options = optionsAccessor.Value ?? new AbbreviationRuleOptions(); // Use default options if null
 
         if (options.ReplaceDefaultAbbreviations)
         {
@@ -96,17 +96,18 @@ public sealed partial class AbbreviationNormalizationRule : ITextNormalizationRu
         else
         {
             // Merge dictionaries, custom taking precedence
-            var merged = new Dictionary<string, string>(
+            Dictionary<string, string> merged = new(
                 DefaultAbbreviationMap,
                 StringComparer.OrdinalIgnoreCase
             );
             if (options.CustomAbbreviations != null)
             {
-                foreach (var kvp in options.CustomAbbreviations)
+                foreach (KeyValuePair<string, string> kvp in options.CustomAbbreviations)
                 {
                     merged[kvp.Key] = kvp.Value; // Add or overwrite
                 }
             }
+
             _effectiveAbbreviations = merged.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
         }
 
@@ -132,6 +133,7 @@ public sealed partial class AbbreviationNormalizationRule : ITextNormalizationRu
                 $"Regex timeout during abbreviation normalization: {ex.Message}"
             );
         }
+
         return currentText;
     }
 
@@ -190,9 +192,8 @@ public sealed partial class AbbreviationNormalizationRule : ITextNormalizationRu
     /// </summary>
     /// <param name="message">Exception message</param>
     /// <param name="innerException">Inner exception</param>
-    public sealed class RegexCreationException(string message, Exception innerException) : Exception(message, innerException)
-    {
-    }
+    public sealed class RegexCreationException(string message, Exception innerException)
+        : Exception(message, innerException) { }
 
     [GeneratedRegex("(?!)", RegexOptions.Compiled)]
     private static partial Regex Never();

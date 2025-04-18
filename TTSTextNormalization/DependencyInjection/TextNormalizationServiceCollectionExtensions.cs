@@ -3,9 +3,6 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using TTSTextNormalization.Abstractions;
 using TTSTextNormalization.Core;
 using TTSTextNormalization.Rules;
-using System.Collections.Generic; // Add this using
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options; // Add this potentially
 
 namespace TTSTextNormalization.DependencyInjection;
 
@@ -30,19 +27,22 @@ public static class TextNormalizationServiceCollectionExtensions
         ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(configure);
 
+        // Ensure Options services are registered
+        services.AddOptions();
+
         // Create the builder which will collect registrations
-        var builder = new TextNormalizationBuilder(services);
+        TextNormalizationBuilder builder = new(services);
         configure(builder);
 
         // Register the collected RuleRegistrations so the pipeline can access them
-        // We register the list itself as a singleton collection.
         services.AddSingleton(builder.Registrations as IEnumerable<RuleRegistration>);
 
         // Register the main normalizer implementation.
-        // It now depends on IServiceProvider and IEnumerable<RuleRegistration>.
-        // Consider the lifetime carefully. If rules have scoped dependencies, the pipeline might need to be scoped too.
-        // Let's assume Singleton pipeline is acceptable if rules are Singleton/Transient or handle scope carefully.
         services.TryAddSingleton<ITextNormalizer, TextNormalizationPipeline>();
+
+        // Note: We do NOT register default IOptions<T> instances here.
+        // The framework handles resolving IOptions<T> based on services.Configure<T>() calls.
+        // Users should use services.Configure<RuleOptions>(...) to set options.
 
         return services;
     }
@@ -60,13 +60,13 @@ public static class TextNormalizationServiceCollectionExtensions
         this ITextNormalizationBuilder builder, int? orderOverride = null)
     {
         ArgumentNullException.ThrowIfNull(builder);
-        // Register rule T and record its registration details
         return builder.AddRule<BasicSanitizationRule>(ServiceLifetime.Singleton, orderOverride);
     }
 
     /// <summary>
     /// Adds the <see cref="EmojiNormalizationRule"/> to the text normalization pipeline.
     /// Replaces standard Unicode emojis with their textual descriptions. Default Order: 100.
+    /// Configurable via <see cref="EmojiRuleOptions"/>.
     /// </summary>
     /// <param name="builder">The text normalization builder.</param>
     /// <param name="orderOverride">Optional order override.</param>
@@ -75,6 +75,7 @@ public static class TextNormalizationServiceCollectionExtensions
         this ITextNormalizationBuilder builder, int? orderOverride = null)
     {
         ArgumentNullException.ThrowIfNull(builder);
+        // Rule now depends on IOptions, use Singleton
         return builder.AddRule<EmojiNormalizationRule>(ServiceLifetime.Singleton, orderOverride);
     }
 
@@ -104,8 +105,6 @@ public static class TextNormalizationServiceCollectionExtensions
         this ITextNormalizationBuilder builder, int? orderOverride = null)
     {
         ArgumentNullException.ThrowIfNull(builder);
-        // Abbreviation rule now depends on IOptions, recommend Scoped or Singleton
-        // If using IOptionsSnapshot, it MUST be Scoped. Let's stick to Singleton + IOptions for now.
         return builder.AddRule<AbbreviationNormalizationRule>(ServiceLifetime.Singleton, orderOverride);
     }
 
@@ -153,7 +152,8 @@ public static class TextNormalizationServiceCollectionExtensions
 
     /// <summary>
     /// Adds the <see cref="UrlNormalizationRule"/> to the text normalization pipeline.
-    /// Replaces detected URLs with a " link " placeholder. Default Order: 600.
+    /// Replaces detected URLs with a placeholder. Default Order: 600.
+    /// Configurable via <see cref="UrlRuleOptions"/>.
     /// </summary>
     /// <param name="builder">The text normalization builder.</param>
     /// <param name="orderOverride">Optional order override.</param>
@@ -162,6 +162,7 @@ public static class TextNormalizationServiceCollectionExtensions
         this ITextNormalizationBuilder builder, int? orderOverride = null)
     {
         ArgumentNullException.ThrowIfNull(builder);
+        // Rule now depends on IOptions, use Singleton
         return builder.AddRule<UrlNormalizationRule>(ServiceLifetime.Singleton, orderOverride);
     }
 
@@ -179,6 +180,3 @@ public static class TextNormalizationServiceCollectionExtensions
         return builder.AddRule<WhitespaceNormalizationRule>(ServiceLifetime.Singleton, orderOverride);
     }
 }
-
-// Add using directives if needed
-// using Microsoft.Extensions.Options;

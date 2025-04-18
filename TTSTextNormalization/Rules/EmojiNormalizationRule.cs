@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using Microsoft.Extensions.Options; // Add this using
+using System.Text; // Add this using
+using System.Text.RegularExpressions;
 using TTSTextNormalization.Abstractions;
 using TTSTextNormalization.EmojiDataGenerated;
 
@@ -7,17 +9,29 @@ namespace TTSTextNormalization.Rules;
 /// <summary>
 /// Normalizes standard Unicode emojis into their textual descriptions
 /// using data generated from an emoji JSON source at compile time.
+/// Allows optional prefix and suffix via <see cref="EmojiRuleOptions"/>.
 /// </summary>
 public sealed class EmojiNormalizationRule : ITextNormalizationRule
 {
     /// <inheritdoc/>
     public int Order => 100;
 
-    /// <inheritdoc/>
-    public EmojiNormalizationRule() { }
+    private readonly EmojiRuleOptions _options;
 
     /// <summary>
-    /// Replaces known emojis in the input text using the source-generated Regex and map.
+    /// Initializes a new instance of the <see cref="EmojiNormalizationRule"/> class.
+    /// </summary>
+    /// <param name="optionsAccessor">The configuration options.</param>
+    /// <exception cref="ArgumentNullException">Thrown if optionsAccessor is null.</exception>
+    public EmojiNormalizationRule(IOptions<EmojiRuleOptions> optionsAccessor)
+    {
+        ArgumentNullException.ThrowIfNull(optionsAccessor);
+        _options = optionsAccessor.Value ?? new EmojiRuleOptions();
+    }
+
+    /// <summary>
+    /// Replaces known emojis in the input text using the source-generated Regex and map,
+    /// applying configured prefix and suffix.
     /// </summary>
     public string Apply(string inputText)
     {
@@ -28,6 +42,7 @@ public sealed class EmojiNormalizationRule : ITextNormalizationRule
 
         try
         {
+            // Pass the instance method as the evaluator
             return EmojiData.EmojiMatchRegex.Replace(inputText, EmojiMatchEvaluator);
         }
         catch (RegexMatchTimeoutException ex)
@@ -43,20 +58,44 @@ public sealed class EmojiNormalizationRule : ITextNormalizationRule
     }
 
     /// <summary>
-    /// MatchEvaluator to look up the found emoji in the generated map.
+    /// MatchEvaluator to look up the found emoji in the generated map
+    /// and apply configured prefix/suffix.
     /// </summary>
-    private static string EmojiMatchEvaluator(Match match)
+    private string EmojiMatchEvaluator(Match match) // Now an instance method
     {
         // The Regex ensures we only match keys present in the map.
         if (EmojiData.EmojiToNameMap.TryGetValue(match.Value, out string? name))
         {
-            // Pad with spaces for TTS separation. Use the 'name' from the JSON.
-            return $" {name} ";
+            // Use StringBuilder for efficient concatenation
+            StringBuilder builder = new();
+            builder.Append(' '); // Leading space always
+
+            if (!string.IsNullOrEmpty(_options.Prefix))
+            {
+                builder.Append(_options.Prefix);
+                // Ensure space after prefix if prefix itself doesn't end with one
+                if (!_options.Prefix.EndsWith(' '))
+                    builder.Append(' ');
+            }
+
+            builder.Append(name);
+
+            if (!string.IsNullOrEmpty(_options.Suffix))
+            {
+                // Ensure space before suffix if suffix itself doesn't start with one
+                if (!_options.Suffix.StartsWith(' '))
+                    builder.Append(' ');
+                builder.Append(_options.Suffix);
+            }
+
+            builder.Append(' '); // Trailing space always
+
+            return builder.ToString();
         }
         else
         {
             // Should not happen if Regex and Map are generated correctly.
-            // Fallback: return original emoji (or empty string to remove). Let's keep it.
+            // Fallback: return original emoji.
             return match.Value;
         }
     }

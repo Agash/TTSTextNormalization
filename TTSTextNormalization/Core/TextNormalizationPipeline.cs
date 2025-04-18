@@ -1,7 +1,7 @@
-﻿using TTSTextNormalization.Abstractions;
-using TTSTextNormalization.DependencyInjection;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System.Collections.ObjectModel;
+using TTSTextNormalization.Abstractions;
+using TTSTextNormalization.DependencyInjection;
 
 namespace TTSTextNormalization.Core;
 
@@ -36,11 +36,11 @@ public sealed class TextNormalizationPipeline : ITextNormalizer
         ArgumentNullException.ThrowIfNull(registrations);
         _logger = logger;
 
-        var resolvedAndOrderedRules = new List<(ITextNormalizationRule Rule, int EffectiveOrder)>();
+        List<(ITextNormalizationRule Rule, int EffectiveOrder)> resolvedAndOrderedRules = [];
 
         _logger?.LogDebug("Constructing TextNormalizationPipeline. Resolving and ordering rules...");
 
-        foreach (var registration in registrations)
+        foreach (RuleRegistration registration in registrations)
         {
             try
             {
@@ -50,7 +50,7 @@ public sealed class TextNormalizationPipeline : ITextNormalizer
                 if (serviceInstance is not ITextNormalizationRule ruleInstance)
                 {
                     // This should not happen if AddRule was used correctly, but check defensively
-                    var errorMsg = $"Resolved service for type '{registration.RuleType.FullName}' does not implement ITextNormalizationRule.";
+                    string errorMsg = $"Resolved service for type '{registration.RuleType.FullName}' does not implement ITextNormalizationRule.";
                     _logger?.LogError("Resolved service for type '{RegistrationType}' does not implement ITextNormalizationRule.", registration.RuleType.FullName);
                     throw new InvalidOperationException(errorMsg);
                 }
@@ -65,7 +65,7 @@ public sealed class TextNormalizationPipeline : ITextNormalizer
             catch (Exception ex)
             {
                 // Catch resolution errors
-                var errorMsg = $"Failed to resolve or process rule registration for type '{registration.RuleType.FullName}'. See inner exception.";
+                string errorMsg = $"Failed to resolve or process rule registration for type '{registration.RuleType.FullName}'. See inner exception.";
                 _logger?.LogError(ex, "Failed to resolve or process rule registration for type '{RegistrationType}'. See inner exception.", registration.RuleType.FullName);
                 throw new InvalidOperationException(errorMsg, ex);
             }
@@ -81,7 +81,7 @@ public sealed class TextNormalizationPipeline : ITextNormalizer
         _logger?.LogInformation("TextNormalizationPipeline constructed with {RuleCount} rules.", _orderedRules.Count);
         if (_logger?.IsEnabled(LogLevel.Debug) ?? false)
         {
-            foreach (var rule in _orderedRules)
+            foreach (ITextNormalizationRule rule in _orderedRules)
             {
                 _logger.LogDebug(" > Rule: {RuleName} (Order: {Order})", rule.GetType().Name, rule.Order); // Log default order for reference
             }
