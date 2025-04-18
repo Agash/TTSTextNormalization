@@ -43,7 +43,7 @@ jobs:
     - name: Run Unit Tests
       # Run tests for the entire solution in Release config
       # --no-build assumes the previous build step was successful
-      run: dotnet test TTSTextNormalization.sln --configuration Release --no-build --verbosity normal
+      run: dotnet test TTSTextNormalization.sln --configuration Release --verbosity normal
       
     - name: Pack Library
       # Pack the specific library project
