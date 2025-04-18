@@ -14,7 +14,6 @@
 	  <Company>Agash</Company>
 	  <Description>A .NET 9 / C# 13 class library to normalize text (emojis, currency, numbers, abbreviations) for consistent Text-to-Speech (TTS) output, tailored for chat/donation scenarios.</Description>
 	  <Copyright>Copyright (c) Agash 2025</Copyright>
-	  <PackageLicenseExpression>MIT</PackageLicenseExpression>
 	  <PackageProjectUrl>https://github.com/Agash/TTSTextNormalization</PackageProjectUrl>
 	  <RepositoryUrl>https://github.com/Agash/TTSTextNormalization.git</RepositoryUrl>
 	  <RepositoryType>git</RepositoryType>
