@@ -135,7 +135,6 @@ public class UrlNormalizationRuleTests
         Assert.ThrowsException<ArgumentNullException>(() => _rule.Apply(input!));
     }
 
-    // --- New Test for Custom Placeholder Option ---
     [TestMethod]
     public void Apply_WithOptions_UsesCustomPlaceholder()
     {

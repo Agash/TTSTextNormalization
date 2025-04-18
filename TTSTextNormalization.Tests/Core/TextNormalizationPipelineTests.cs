@@ -30,8 +30,6 @@ public class TextNormalizationPipelineTests
         return provider.GetRequiredService<ITextNormalizer>();
     }
 
-    // ... existing tests ...
-
     [TestMethod]
     public void Normalize_RuleOrderOverride_ExecutesInSpecifiedOrder()
     {
@@ -110,8 +108,6 @@ public class TextNormalizationPipelineTests
         Assert.AreEqual(expected, normalizer.Normalize(input));
     }
 
-    // --- New Tests for URL and Emoji Options in Pipeline ---
-
     [TestMethod]
     public void Normalize_UrlRuleWithOptions_UsesCustomPlaceholder()
     {
@@ -166,7 +162,6 @@ public class TextNormalizationPipelineTests
         Assert.AreEqual(expected, normalizer.Normalize(input));
     }
 
-    // --- Update Comprehensive Test to Use Options (Example) ---
     [TestMethod]
     [DataRow(
         "  ‘Test’ 1st..  soooo   cool ✨!! LOL go to https://example.com/page?q=1 Cost: $12.50 USD??? ",

@@ -11,7 +11,7 @@ public sealed partial class WhitespaceNormalizationRule : ITextNormalizationRule
 {
     /// <inheritdoc/>
     public int Order => 9000;
-    private const int RegexTimeoutMilliseconds = 100; // Timeout for each step
+    private const int RegexTimeoutMilliseconds = 100;
 
     /// <inheritdoc/>
     public WhitespaceNormalizationRule() { }
@@ -49,7 +49,7 @@ public sealed partial class WhitespaceNormalizationRule : ITextNormalizationRule
             // Depending on which step timed out, currentText might be partially processed.
             // Returning it is usually better than returning the original input.
         }
-        catch (Exception ex) // Catch other potential errors
+        catch (Exception ex)
         {
             Console.Error.WriteLine($"Error during whitespace normalization step: {ex.Message}");
         }

@@ -104,7 +104,7 @@ public class AbbreviationNormalizationRuleTests
         "rofl",
         " rolling on the floor laughing ",
         DisplayName = "Known abbreviation ROFL - Corrected Expectation"
-    )] // ROFL is now known
+    )]
     [DataRow(
         "This is normal text",
         "This is normal text",

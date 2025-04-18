@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Options; // Add this
+﻿using Microsoft.Extensions.Options;
 using TTSTextNormalization.Rules;
 
 namespace TTSTextNormalization.Tests.Rules;
@@ -104,7 +104,6 @@ public class EmojiNormalizationRuleTests
         EmojiRuleOptions options = new() { Prefix = "The", Suffix = "Emoji" };
         EmojiNormalizationRule ruleWithOptions = new(Options.Create(options));
         string input = "It's a 🍕";
-        // Expected: " It's a  The pizza Emoji  "
         string expected = "It's a  The pizza Emoji ";
 
         // Act

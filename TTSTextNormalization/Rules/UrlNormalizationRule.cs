@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Options; // Add this using
+﻿using Microsoft.Extensions.Options;
 using System.Text.RegularExpressions;
 using TTSTextNormalization.Abstractions;
 
@@ -72,7 +72,7 @@ public sealed partial class UrlNormalizationRule : ITextNormalizationRule
     /// Evaluates a potential URL match using Uri.TryCreate for validation.
     /// Uses the configured placeholder upon successful validation.
     /// </summary>
-    private string UrlMatchEvaluator(Match match) // Now an instance method
+    private string UrlMatchEvaluator(Match match)
     {
         string potentialUrl = match.Value;
 

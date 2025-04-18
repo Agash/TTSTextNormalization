@@ -40,10 +40,6 @@ public static class TextNormalizationServiceCollectionExtensions
         // Register the main normalizer implementation.
         services.TryAddSingleton<ITextNormalizer, TextNormalizationPipeline>();
 
-        // Note: We do NOT register default IOptions<T> instances here.
-        // The framework handles resolving IOptions<T> based on services.Configure<T>() calls.
-        // Users should use services.Configure<RuleOptions>(...) to set options.
-
         return services;
     }
 
@@ -75,7 +71,6 @@ public static class TextNormalizationServiceCollectionExtensions
         this ITextNormalizationBuilder builder, int? orderOverride = null)
     {
         ArgumentNullException.ThrowIfNull(builder);
-        // Rule now depends on IOptions, use Singleton
         return builder.AddRule<EmojiNormalizationRule>(ServiceLifetime.Singleton, orderOverride);
     }
 
@@ -162,7 +157,6 @@ public static class TextNormalizationServiceCollectionExtensions
         this ITextNormalizationBuilder builder, int? orderOverride = null)
     {
         ArgumentNullException.ThrowIfNull(builder);
-        // Rule now depends on IOptions, use Singleton
         return builder.AddRule<UrlNormalizationRule>(ServiceLifetime.Singleton, orderOverride);
     }
 

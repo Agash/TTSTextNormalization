@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Options; // Add this using
-using System.Text; // Add this using
+﻿using Microsoft.Extensions.Options;
+using System.Text;
 using System.Text.RegularExpressions;
 using TTSTextNormalization.Abstractions;
 using TTSTextNormalization.EmojiDataGenerated;
@@ -61,7 +61,7 @@ public sealed class EmojiNormalizationRule : ITextNormalizationRule
     /// MatchEvaluator to look up the found emoji in the generated map
     /// and apply configured prefix/suffix.
     /// </summary>
-    private string EmojiMatchEvaluator(Match match) // Now an instance method
+    private string EmojiMatchEvaluator(Match match)
     {
         // The Regex ensures we only match keys present in the map.
         if (EmojiData.EmojiToNameMap.TryGetValue(match.Value, out string? name))

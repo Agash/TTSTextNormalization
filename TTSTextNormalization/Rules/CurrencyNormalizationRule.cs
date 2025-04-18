@@ -16,7 +16,7 @@ public sealed partial class CurrencyNormalizationRule : ITextNormalizationRule
 {
     /// <inheritdoc/>
     public int Order => 200;
-    private const int RegexTimeoutMilliseconds = 150; // Timeout per regex operation
+    private const int RegexTimeoutMilliseconds = 150;
     private static readonly TimeSpan RegexTimeout = TimeSpan.FromMilliseconds(
         RegexTimeoutMilliseconds
     );
@@ -333,7 +333,7 @@ public sealed partial class CurrencyNormalizationRule : ITextNormalizationRule
     /// <summary>
     /// Initializes a new instance of the <see cref="CurrencyNormalizationRule"/> class.
     /// </summary>
-    public CurrencyNormalizationRule() { } // Instance constructor
+    public CurrencyNormalizationRule() { }
 
     /// <inheritdoc/>
     public string Apply(string inputText)

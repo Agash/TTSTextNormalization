@@ -17,7 +17,7 @@ namespace TTSTextNormalization.Core;
 public sealed class TextNormalizationPipeline : ITextNormalizer
 {
     private readonly ReadOnlyCollection<ITextNormalizationRule> _orderedRules;
-    private readonly ILogger<TextNormalizationPipeline>? _logger; // Optional logging
+    private readonly ILogger<TextNormalizationPipeline>? _logger;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TextNormalizationPipeline"/> class.
@@ -30,7 +30,7 @@ public sealed class TextNormalizationPipeline : ITextNormalizer
     public TextNormalizationPipeline(
         IServiceProvider serviceProvider,
         IEnumerable<RuleRegistration> registrations,
-        ILogger<TextNormalizationPipeline>? logger = null) // Make logger optional
+        ILogger<TextNormalizationPipeline>? logger = null)
     {
         ArgumentNullException.ThrowIfNull(serviceProvider);
         ArgumentNullException.ThrowIfNull(registrations);
