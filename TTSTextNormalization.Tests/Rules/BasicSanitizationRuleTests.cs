@@ -54,7 +54,7 @@ public class BasicSanitizationRuleTests
     [DataRow("Em—Dash", "Em-Dash", DisplayName = "Replaces Em Dash")]
     [DataRow("En–Dash", "En-Dash", DisplayName = "Replaces En Dash")]
     [DataRow("«Guillemets»", "\"Guillemets\"", DisplayName = "Replaces Double Guillemets")]
-    [DataRow("‹Guillemets›", "'Guillemets'", DisplayName = "Replaces Single Guillemets - Corrected")] // Corrected expectation
+    [DataRow("‹Guillemets›", "'Guillemets'", DisplayName = "Replaces Single Guillemets - Corrected")]
     [DataRow("Mix: “Smart” & ‘Apostrophe’…", "Mix: \"Smart\" & 'Apostrophe'...", DisplayName = "Replaces Mixed Fancy Chars")]
     public void Apply_ReplacesFancyCharsWithAscii(string input, string expected)
     {

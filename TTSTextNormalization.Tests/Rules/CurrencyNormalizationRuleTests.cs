@@ -25,7 +25,7 @@ public class CurrencyNormalizationRuleTests
     // Symbol First
     [DataRow("$1", " one US dollar ", DisplayName = "USD Simple ($)")]
     [DataRow("$1.00", " one US dollar ", DisplayName = "USD Simple zero cents ($)")]
-    [DataRow("$1.50", " one US dollar fifty cents ", DisplayName = "USD with Cents ($)")] // No "and" for cents usually
+    [DataRow("$1.50", " one US dollar fifty cents ", DisplayName = "USD with Cents ($)")]
     [DataRow("$1,234.56", " one thousand two hundred and thirty-four US dollars fifty-six cents ", DisplayName = "USD Large with Cents ($)")]
     [DataRow("£10", " ten British pounds ", DisplayName = "GBP Simple (£)")]
     [DataRow("£0.50", " zero British pounds fifty pence ", DisplayName = "GBP Only Pence (£)")]
@@ -37,11 +37,11 @@ public class CurrencyNormalizationRuleTests
     [DataRow("1.00 USD", " one US dollar ", DisplayName = "USD Code zero cents")]
     [DataRow("1.50 USD", " one US dollar fifty cents ", DisplayName = "USD Code with Cents")]
     [DataRow("1,234.56 USD", " one thousand two hundred and thirty-four US dollars fifty-six cents ", DisplayName = "USD Code Large")]
-    [DataRow("10 GBP", " ten British pounds ", DisplayName = "GBP Code Simple")] // Uses "pound" from map
+    [DataRow("10 GBP", " ten British pounds ", DisplayName = "GBP Code Simple")]
     [DataRow("0.50 GBP", " zero British pounds fifty pence ", DisplayName = "GBP Code Only Pence")]
     [DataRow("100 EUR", " one hundred euros ", DisplayName = "EUR Code Simple")]
     [DataRow("1.25 EUR", " one euro twenty-five cents ", DisplayName = "EUR Code With Cents")]
-    [DataRow("500 JPY", " five hundred Japanese yen ", DisplayName = "JPY Code Simple")] // Uses "yen" from map
+    [DataRow("500 JPY", " five hundred Japanese yen ", DisplayName = "JPY Code Simple")]
     [DataRow("100 CAD", " one hundred Canadian dollars ", DisplayName = "CAD Code Example")]
     [DataRow("10 BRL", " ten Brazilian reais ", DisplayName = "BRL Code Example")]
     // Combined

@@ -9,10 +9,11 @@ namespace TTSTextNormalization.DependencyInjection;
 /// </summary>
 internal sealed class TextNormalizationBuilder : ITextNormalizationBuilder
 {
-    /// <summary>
-    /// Gets the underlying service collection.
-    /// </summary>
+    /// <inheritdoc/>
     public IServiceCollection Services { get; }
+
+    // Store registration details internally
+    internal List<RuleRegistration> Registrations { get; } = [];
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TextNormalizationBuilder"/> class.
@@ -25,23 +26,25 @@ internal sealed class TextNormalizationBuilder : ITextNormalizationBuilder
         Services = services;
     }
 
-    /// <summary>
-    /// Adds a custom normalization rule to the pipeline by registering it
-    /// with the service collection as <see cref="ITextNormalizationRule"/>.
-    /// </summary>
-    /// <typeparam name="T">The type of the rule implementation.</typeparam>
-    /// <param name="lifetime">The desired service lifetime.</param>
-    /// <returns>The builder instance.</returns>
-    public ITextNormalizationBuilder AddRule<T>(ServiceLifetime lifetime = ServiceLifetime.Singleton)
+    /// <inheritdoc/>
+    public ITextNormalizationBuilder AddRule<T>(
+        ServiceLifetime lifetime = ServiceLifetime.Singleton,
+        int? orderOverride = null)
         where T : class, ITextNormalizationRule
     {
-        // TryAddEnumerable ensures multiple rules of the same type or different types
-        // can be added and injected as IEnumerable<ITextNormalizationRule>.
-        // It registers T both as itself and as ITextNormalizationRule.
-        Services.TryAddEnumerable(ServiceDescriptor.Describe(
-            typeof(ITextNormalizationRule), // Service Type (what the pipeline asks for)
-            typeof(T),                     // Implementation Type (the concrete rule class)
-            lifetime));                    // Lifetime (Singleton recommended for stateless rules)
+        // 1. Register the concrete rule type itself so the pipeline can resolve it.
+        //    Use TryAdd to avoid duplicate registrations of the type itself.
+        Services.TryAdd(new ServiceDescriptor(typeof(T), typeof(T), lifetime));
+
+        // 2. Record the registration details (including the override) for the pipeline.
+        //    We allow multiple registrations if needed, although the pipeline
+        //    will likely resolve only one instance per type unless configured differently.
+        Registrations.Add(new RuleRegistration
+        {
+            RuleType = typeof(T),
+            Lifetime = lifetime,
+            OrderOverride = orderOverride
+        });
 
         return this;
     }
