@@ -8,11 +8,14 @@ namespace TTSTextNormalization.Rules;
 /// </summary>
 public sealed partial class LetterRepetitionRule : ITextNormalizationRule
 {
+    /// <inheritdoc/>
     public int Order => 510;
     private const int RegexTimeoutMilliseconds = 150; // Might need slightly more time for complex strings
 
+    /// <inheritdoc/>
     public LetterRepetitionRule() { }
 
+    /// <inheritdoc/>
     public string Apply(string inputText)
     {
         ArgumentNullException.ThrowIfNull(inputText);

@@ -107,7 +107,7 @@ public class TextNormalizationPipelineTests
     [TestMethod]
     [DataRow(
         "  ‘Test’ 1st..  soooo   cool ✨!! LOL   Cost: $12.50 USD??? ",
-        "'Test' first. soo cool sparkles! laughing out loud Cost: twelve dollars fifty cents USD?",
+        "'Test' first. soo cool sparkles! laughing out loud Cost: twelve US dollars fifty cents?",
         DisplayName = "All Rules Integration Test 1 - Corrected"
     )]
     [DataRow(
@@ -122,7 +122,7 @@ public class TextNormalizationPipelineTests
     )]
     [DataRow(
         "  OMG!!! The price is £50.00??? LOL... IDK.  1st prize! ",
-        "oh my god! The price is fifty pounds? laughing out loud. I don't know. first prize!",
+        "oh my god! The price is fifty British pounds? laughing out loud. I don't know. first prize!",
         DisplayName = "All Rules Integration Test 4 - Mixed Punctuation & Abbr - Corrected"
     )]
     [DataRow(

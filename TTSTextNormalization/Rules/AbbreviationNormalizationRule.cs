@@ -9,6 +9,7 @@ namespace TTSTextNormalization.Rules;
 /// </summary>
 public sealed partial class AbbreviationNormalizationRule : ITextNormalizationRule
 {
+    /// <inheritdoc/>
     public int Order => 300;
     private const int RegexTimeoutMilliseconds = 150; // Slightly increased for larger pattern
 
@@ -73,8 +74,10 @@ public sealed partial class AbbreviationNormalizationRule : ITextNormalizationRu
         { "gpu", "g p u" }, // Spell out
     }.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
 
+    /// <inheritdoc/>
     public AbbreviationNormalizationRule() { }
 
+    /// <inheritdoc/>
     public string Apply(string inputText)
     {
         ArgumentNullException.ThrowIfNull(inputText);

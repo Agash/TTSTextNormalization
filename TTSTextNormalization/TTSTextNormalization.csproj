@@ -35,6 +35,7 @@
 
 	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
 	  <EnablePackageValidation>true</EnablePackageValidation>
+	  <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 
 	  <MinVerTagPrefix>v</MinVerTagPrefix>
 	  <!-- SourceLink Properties (for debugging into the source code) -->

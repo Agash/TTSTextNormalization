@@ -31,6 +31,9 @@ public sealed partial class BasicSanitizationRule : ITextNormalizationRule
         { "–", "-" }, // En dash            
     }.ToFrozenDictionary(StringComparer.Ordinal);
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BasicSanitizationRule"/> class.
+    /// </summary>
     public BasicSanitizationRule() { }
 
     /// <summary>

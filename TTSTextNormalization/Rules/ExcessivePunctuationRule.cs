@@ -8,11 +8,14 @@ namespace TTSTextNormalization.Rules;
 /// </summary>
 public sealed partial class ExcessivePunctuationRule : ITextNormalizationRule
 {
+    /// <inheritdoc/>
     public int Order => 500;
     private const int RegexTimeoutMilliseconds = 100;
 
+    /// <inheritdoc/>
     public ExcessivePunctuationRule() { }
 
+    /// <inheritdoc/>
     public string Apply(string inputText)
     {
         ArgumentNullException.ThrowIfNull(inputText);
