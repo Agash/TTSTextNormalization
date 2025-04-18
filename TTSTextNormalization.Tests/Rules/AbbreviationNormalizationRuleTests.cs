@@ -67,8 +67,8 @@ public class AbbreviationNormalizationRuleTests
     [DataRow("lollipop", "lollipop", DisplayName = "Substring 'lol'")]
     [DataRow("scrolling", "scrolling", DisplayName = "Substring 'lol' (reverse)")]
     [DataRow("theory", "theory", DisplayName = "Substring 'ty'")]
-    [DataRow("imo-test", "imo-test", DisplayName = "Abbreviation as prefix - Corrected Expectation")] // Lookaround fixed
-    [DataRow("test-imo", "test-imo", DisplayName = "Abbreviation as suffix - Corrected Expectation")] // Lookaround fixed
+    [DataRow("imo-test", "imo-test", DisplayName = "Abbreviation as prefix")]
+    [DataRow("test-imo", "test-imo", DisplayName = "Abbreviation as suffix")]
     public void Apply_AbbreviationAsSubstringOrAttached_DoesNotReplace(string input, string expected)
     {
         // Act

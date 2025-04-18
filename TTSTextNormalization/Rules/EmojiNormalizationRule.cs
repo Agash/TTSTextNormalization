@@ -1,6 +1,6 @@
-﻿using TTSTextNormalization.EmojiDataGenerated;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using TTSTextNormalization.Abstractions;
+using TTSTextNormalization.EmojiDataGenerated;
 
 namespace TTSTextNormalization.Rules;
 
@@ -10,8 +10,10 @@ namespace TTSTextNormalization.Rules;
 /// </summary>
 public sealed class EmojiNormalizationRule : ITextNormalizationRule
 {
+    /// <inheritdoc/>
     public int Order => 100;
 
+    /// <inheritdoc/>
     public EmojiNormalizationRule() { }
 
     /// <summary>
@@ -47,8 +49,10 @@ public sealed class EmojiNormalizationRule : ITextNormalizationRule
     {
         // The Regex ensures we only match keys present in the map.
         if (EmojiData.EmojiToNameMap.TryGetValue(match.Value, out string? name))
+        {
             // Pad with spaces for TTS separation. Use the 'name' from the JSON.
             return $" {name} ";
+        }
         else
         {
             // Should not happen if Regex and Map are generated correctly.

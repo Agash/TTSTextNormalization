@@ -6,16 +6,26 @@ using TTSTextNormalization.Abstractions;
 
 namespace TTSTextNormalization.Rules;
 
+/// <summary>
+/// Normalizes standalone numbers, including cardinals, ordinals, decimals, and multi-dot sequences (like version numbers).
+/// Uses Humanizer for cardinal and ordinal word conversion.
+/// </summary>
 public sealed partial class NumberNormalizationRule : ITextNormalizationRule
 {
+    /// <inheritdoc/>
     public int Order => 400;
+
     private const int RegexTimeoutMilliseconds = 150;
 
     // Keep DigitWords for the new multi-dot logic
     private static readonly string[] DigitWords = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NumberNormalizationRule"/> class.
+    /// </summary>
     public NumberNormalizationRule() { }
 
+    /// <inheritdoc/>
     public string Apply(string inputText)
     {
         ArgumentNullException.ThrowIfNull(inputText);

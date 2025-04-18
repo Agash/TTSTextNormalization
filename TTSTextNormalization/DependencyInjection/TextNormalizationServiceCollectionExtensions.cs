@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using TTSTextNormalization.Rules;
 using TTSTextNormalization.Abstractions;
 using TTSTextNormalization.Core;
+using TTSTextNormalization.Rules;
 
 namespace TTSTextNormalization.DependencyInjection;
 
@@ -29,30 +29,61 @@ public static class TextNormalizationServiceCollectionExtensions
     }
 
     // --- Built-in Rule Extensions for the Builder ---
+
+    /// <summary>
+    /// Adds the <see cref="BasicSanitizationRule"/> to the text normalization pipeline.
+    /// Performs essential cleanup like normalizing line breaks and replacing fancy characters. Recommended Order: 10.
+    /// </summary>
+    /// <param name="builder">The text normalization builder.</param>
+    /// <returns>The builder instance for fluent chaining.</returns>
     public static ITextNormalizationBuilder AddBasicSanitizationRule(this ITextNormalizationBuilder builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
         return builder.AddRule<BasicSanitizationRule>(ServiceLifetime.Singleton);
     }
 
+    /// <summary>
+    /// Adds the <see cref="EmojiNormalizationRule"/> to the text normalization pipeline.
+    /// Replaces standard Unicode emojis with their textual descriptions. Recommended Order: 100.
+    /// </summary>
+    /// <param name="builder">The text normalization builder.</param>
+    /// <returns>The builder instance for fluent chaining.</returns>
     public static ITextNormalizationBuilder AddEmojiRule(this ITextNormalizationBuilder builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
         return builder.AddRule<EmojiNormalizationRule>(ServiceLifetime.Singleton);
     }
 
+    /// <summary>
+    /// Adds the <see cref="CurrencyNormalizationRule"/> to the text normalization pipeline.
+    /// Normalizes currency symbols and codes (e.g., "$10.50", "100 EUR") into spoken text. Recommended Order: 200.
+    /// </summary>
+    /// <param name="builder">The text normalization builder.</param>
+    /// <returns>The builder instance for fluent chaining.</returns>
     public static ITextNormalizationBuilder AddCurrencyRule(this ITextNormalizationBuilder builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
         return builder.AddRule<CurrencyNormalizationRule>(ServiceLifetime.Singleton);
     }
 
+    /// <summary>
+    /// Adds the <see cref="AbbreviationNormalizationRule"/> to the text normalization pipeline.
+    /// Expands common chat/gaming abbreviations (e.g., "lol", "gg"). Recommended Order: 300.
+    /// </summary>
+    /// <param name="builder">The text normalization builder.</param>
+    /// <returns>The builder instance for fluent chaining.</returns>
     public static ITextNormalizationBuilder AddAbbreviationNormalizationRule(this ITextNormalizationBuilder builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
         return builder.AddRule<AbbreviationNormalizationRule>(ServiceLifetime.Singleton);
     }
 
+    /// <summary>
+    /// Adds the <see cref="NumberNormalizationRule"/> to the text normalization pipeline.
+    /// Converts cardinals, ordinals, decimals, and version-like numbers into words. Recommended Order: 400.
+    /// </summary>
+    /// <param name="builder">The text normalization builder.</param>
+    /// <returns>The builder instance for fluent chaining.</returns>
     public static ITextNormalizationBuilder AddNumberNormalizationRule(this ITextNormalizationBuilder builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
@@ -79,6 +110,12 @@ public static class TextNormalizationServiceCollectionExtensions
         return builder.AddRule<LetterRepetitionRule>(ServiceLifetime.Singleton);
     }
 
+    /// <summary>
+    /// Adds the <see cref="WhitespaceNormalizationRule"/> to the text normalization pipeline.
+    /// Trims ends, collapses internal spaces, and adjusts spacing around punctuation. Recommended Order: 9000.
+    /// </summary>
+    /// <param name="builder">The text normalization builder.</param>
+    /// <returns>The builder instance for fluent chaining.</returns>
     public static ITextNormalizationBuilder AddWhitespaceNormalizationRule(this ITextNormalizationBuilder builder)
     {
         ArgumentNullException.ThrowIfNull(builder);

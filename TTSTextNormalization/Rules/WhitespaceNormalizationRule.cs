@@ -9,11 +9,14 @@ namespace TTSTextNormalization.Rules;
 /// </summary>
 public sealed partial class WhitespaceNormalizationRule : ITextNormalizationRule
 {
+    /// <inheritdoc/>
     public int Order => 9000;
     private const int RegexTimeoutMilliseconds = 100; // Timeout for each step
 
+    /// <inheritdoc/>
     public WhitespaceNormalizationRule() { }
 
+    /// <inheritdoc/>
     public string Apply(string inputText)
     {
         ArgumentNullException.ThrowIfNull(inputText);
