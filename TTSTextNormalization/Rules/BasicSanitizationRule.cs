@@ -121,7 +121,7 @@ public sealed partial class BasicSanitizationRule : ITextNormalizationRule
     /// </summary>
     [GeneratedRegex(
         @"[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F\u200B-\u200D\uFEFF]",
-        RegexOptions.Compiled | RegexOptions.CultureInvariant, // CultureInvariant is fine for code points
+        RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.NonBacktracking, // CultureInvariant is fine for code points
         matchTimeoutMilliseconds: RegexTimeoutMilliseconds)]
     private static partial Regex RemoveControlCharsRegex();
 }

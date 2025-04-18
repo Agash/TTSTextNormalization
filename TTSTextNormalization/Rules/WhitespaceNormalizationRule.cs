@@ -57,19 +57,25 @@ public sealed partial class WhitespaceNormalizationRule : ITextNormalizationRule
         return currentText;
     }
 
-    // Regex for Step 2: Collapse multiple whitespace
-    [GeneratedRegex(@"\s{2,}", RegexOptions.Compiled, RegexTimeoutMilliseconds)]
+    /// <summary>
+    /// Regex for Step 2: Collapse multiple whitespace. Uses NonBacktracking.
+    /// </summary>
+    [GeneratedRegex(@"\s{2,}", RegexOptions.Compiled | RegexOptions.NonBacktracking, RegexTimeoutMilliseconds)]
     private static partial Regex MultipleWhitespaceRegex();
 
-    // Regex for Step 3: Remove space before punctuation
-    // \s+ : one or more whitespace chars
-    // ([.,!?;:]) : Captures one of the punctuation marks into group 1
-    [GeneratedRegex(@"\s+([.,!?;:])", RegexOptions.Compiled, RegexTimeoutMilliseconds)]
+    /// <summary>
+    /// Regex for Step 3: Remove space before punctuation. Uses NonBacktracking.
+    /// \s+ : one or more whitespace chars
+    /// ([.,!?;:]) : Captures one of the punctuation marks into group 1
+    /// </summary>
+    [GeneratedRegex(@"\s+([.,!?;:])", RegexOptions.Compiled | RegexOptions.NonBacktracking, RegexTimeoutMilliseconds)]
     private static partial Regex SpaceBeforePunctuationRegex();
 
-    // Regex for Step 4: Ensure space after punctuation
-    // ([.,!?;:]) : Captures one of the punctuation marks into group 1
-    // (?!\s|$)   : Negative lookahead - asserts that the char is NOT followed by whitespace OR end of string
+    /// <summary>
+    /// Regex for Step 4: Ensure space after punctuation. Cannot use NonBacktracking due to lookahead.
+    /// ([.,!?;:]) : Captures one of the punctuation marks into group 1
+    /// (?!\s|$)   : Negative lookahead - asserts that the char is NOT followed by whitespace OR end of string
+    /// </summary>
     [GeneratedRegex(@"([.,!?;:])(?!\s|$)", RegexOptions.Compiled, RegexTimeoutMilliseconds)]
     private static partial Regex SpaceAfterPunctuationRegex();
 }

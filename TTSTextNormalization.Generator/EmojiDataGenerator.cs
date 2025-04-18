@@ -1,10 +1,10 @@
-﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Text;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Text;
 
 namespace TTSTextNormalization.EmojiDataGenerator;
 
@@ -13,91 +13,109 @@ public class EmojiGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext initContext)
     {
-        //if (!Debugger.IsAttached)
-        //    Debugger.Launch();
-
-        // get the additional text provider
-        IncrementalValuesProvider<AdditionalText> additionalTexts =
-            initContext.AdditionalTextsProvider;
-
-        // apply a 1-to-1 transform on each text, extracting the contents
-        IncrementalValuesProvider<string> transformed = additionalTexts.Select(
-            static (text, _) => text?.GetText()?.ToString() ?? string.Empty
+        // Define the diagnostic descriptors
+        var MissingFileError = new DiagnosticDescriptor(
+            "SWTTSTN001",
+            "Missing Emoji Data File",
+            "The emoji data file 'data-by-emoji.json' is missing or could not be found.",
+            "FileAccess",
+            DiagnosticSeverity.Error,
+            true
+        );
+        var InvalidFileError = new DiagnosticDescriptor(
+            "SWTTSTN002",
+            "Invalid Emoji Data File",
+            "The emoji data file 'data-by-emoji.json' is empty or invalid JSON.",
+            "FileContent",
+            DiagnosticSeverity.Error,
+            true
+        );
+        var FormatError = new DiagnosticDescriptor(
+            "SWTTSTN003",
+            "Invalid Emoji Data Format",
+            "The emoji data file 'data-by-emoji.json' is not in the expected format (Dictionary<string, EmojiEntry>).",
+            "FileFormat",
+            DiagnosticSeverity.Error,
+            true
+        );
+        var RegexGenerationError = new DiagnosticDescriptor(
+            "SWTTSTN004",
+            "Regex Generation Error",
+            "Failed to generate the emoji matching Regex: {0}",
+            "Regex",
+            DiagnosticSeverity.Error,
+            true
         );
 
-        // collect the contents into a batch
-        IncrementalValueProvider<ImmutableArray<string>> collected = transformed.Collect();
+        // Get additional texts provider filtering for the specific file
+        IncrementalValuesProvider<AdditionalText> additionalTexts =
+            initContext.AdditionalTextsProvider.Where(at =>
+                Path.GetFileName(at.Path)
+                    .Equals("data-by-emoji.json", StringComparison.OrdinalIgnoreCase)
+            );
 
-        // take the file contents from the above batch and make some user visible syntax
+        // Combine with compilation to report errors correctly
+        IncrementalValueProvider<(
+            Compilation,
+            ImmutableArray<AdditionalText>
+        )> compilationAndTexts = initContext.CompilationProvider.Combine(additionalTexts.Collect());
+
         initContext.RegisterSourceOutput(
-            collected,
-            static (sourceProductionContext, textContents) =>
+            compilationAndTexts,
+            (spc, source) =>
             {
-                if (textContents.IsDefaultOrEmpty)
+                var (compilation, texts) = source;
+
+                if (texts.IsDefaultOrEmpty)
                 {
-                    sourceProductionContext.ReportDiagnostic(
-                        Diagnostic.Create(
-                            new DiagnosticDescriptor(
-                                "SWTTSTN001",
-                                "Missing Emoji Data File",
-                                "The emoji data file 'data-by-emoji.json' is missing.",
-                                "FileNotFound",
-                                DiagnosticSeverity.Error,
-                                true
-                            ),
-                            Location.None
-                        )
-                    );
+                    // File not found or not included as AdditionalFile
+                    spc.ReportDiagnostic(Diagnostic.Create(MissingFileError, Location.None));
                     return;
                 }
 
-                string? emojiFileContent = textContents.FirstOrDefault();
-                if (string.IsNullOrEmpty(emojiFileContent))
+                // Assuming only one file matches
+                AdditionalText emojiFile = texts[0];
+                SourceText? fileSourceText = emojiFile.GetText(spc.CancellationToken);
+
+                if (fileSourceText == null || fileSourceText.Length == 0)
                 {
-                    sourceProductionContext.ReportDiagnostic(
-                        Diagnostic.Create(
-                            new DiagnosticDescriptor(
-                                "SWTTSTN002",
-                                "Invalid Emoji Data File",
-                                "The emoji data file 'data-by-emoji.json' is empty or invalid.",
-                                "FileError",
-                                DiagnosticSeverity.Error,
-                                true
-                            ),
-                            Location.None
-                        )
-                    );
+                    spc.ReportDiagnostic(Diagnostic.Create(InvalidFileError, Location.None));
                     return;
                 }
 
-                JsonDocument jsonDocument = JsonDocument.Parse(
-                    emojiFileContent!,
-                    new JsonDocumentOptions
-                    {
-                        AllowTrailingCommas = true,
-                        CommentHandling = JsonCommentHandling.Skip,
-                    }
-                );
+                string emojiFileContent = fileSourceText.ToString();
+                Dictionary<string, EmojiEntry>? emojiData = null;
 
-                Dictionary<string, EmojiEntry>? emojiData = jsonDocument.Deserialize<Dictionary<string, EmojiEntry>>(
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-                );
-
-                if (emojiData == null)
+                try
                 {
-                    sourceProductionContext.ReportDiagnostic(
-                        Diagnostic.Create(
-                            new DiagnosticDescriptor(
-                                "SWTTSTN003",
-                                "Invalid Emoji Data Format",
-                                "The emoji data file 'data-by-emoji.json' is not in the expected format.",
-                                "FileFormatError",
-                                DiagnosticSeverity.Error,
-                                true
-                            ),
-                            Location.None
-                        )
+                    JsonDocument jsonDocument = JsonDocument.Parse(
+                        emojiFileContent,
+                        new JsonDocumentOptions
+                        {
+                            AllowTrailingCommas = true,
+                            CommentHandling = JsonCommentHandling.Skip,
+                        }
                     );
+                    emojiData = jsonDocument.Deserialize<Dictionary<string, EmojiEntry>>(
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                    );
+                }
+                catch (JsonException ex)
+                {
+                    spc.ReportDiagnostic(
+                        Diagnostic.Create(InvalidFileError, Location.None, ex.Message)
+                    );
+                    return;
+                }
+                catch (Exception ex) // Catch other potential deserialization errors
+                {
+                    spc.ReportDiagnostic(Diagnostic.Create(FormatError, Location.None, ex.Message));
+                    return;
+                }
+
+                if (emojiData == null || emojiData.Count == 0)
+                {
+                    spc.ReportDiagnostic(Diagnostic.Create(FormatError, Location.None));
                     return;
                 }
 
@@ -105,8 +123,10 @@ public class EmojiGenerator : IIncrementalGenerator
                 sb.AppendLine(
                     """
                     // <auto-generated/>
-                    // Generated by EmojiDataGenerator
+                    #pragma warning disable
                     #nullable enable
+                    // Generated by EmojiDataGenerator
+
                     using System;
                     using System.Collections.Frozen;
                     using System.Collections.Generic;
@@ -126,49 +146,87 @@ public class EmojiGenerator : IIncrementalGenerator
                     """
                 );
 
+                // Build the dictionary initializer
                 foreach (KeyValuePair<string, EmojiEntry> keyValue in emojiData)
                 {
-                    string key = SymbolDisplay.FormatLiteral(keyValue.Key, true);
-                    string value = keyValue.Value.Name.Replace("\"", "\\\"");
-                    sb.AppendLine($"            {{ {key}, \"{value}\" }},");
+                    // Basic validation for name
+                    if (string.IsNullOrWhiteSpace(keyValue.Value?.Name))
+                        continue;
+
+                    string keyLiteral = SymbolDisplay.FormatLiteral(keyValue.Key, true);
+                    string valueLiteral = SymbolDisplay.FormatLiteral(keyValue.Value!.Name!, true); // Ensure name is also correctly literalized
+                    sb.AppendLine($"            {{ {keyLiteral}, {valueLiteral} }},");
                 }
 
                 sb.AppendLine(
                     """
                             };
                             EmojiToNameMap = mapBuilder.ToFrozenDictionary(StringComparer.Ordinal);
+
                     """
                 );
 
+                // Build the Regex pattern
                 string pattern = string.Join(
                     "|",
-                    emojiData.Keys.OrderByDescending(k => k.Length).Select(Regex.Escape)
+                    // Filter keys used in the map to ensure consistency
+                    emojiData
+                        .Where(kv => !string.IsNullOrWhiteSpace(kv.Value?.Name))
+                        .Select(kv => Regex.Escape(kv.Key))
+                        .OrderByDescending(k => k.Length) // Match longest first
                 );
-                sb.AppendLine($"        const string pattern = @\"{pattern}\";");
+
+                if (string.IsNullOrEmpty(pattern))
+                {
+                    // Handle case where no valid emojis were processed
+                    sb.AppendLine($"        // No valid emoji data found to build Regex.");
+                    sb.AppendLine(
+                        $"        EmojiMatchRegex = new Regex(\"(?!)\", RegexOptions.Compiled); // Regex that never matches"
+                    );
+                }
+                else
+                {
+                    // Escape the pattern string itself for use in a C# string literal
+                    string patternLiteral = SymbolDisplay.FormatLiteral(pattern, true);
+                    sb.AppendLine($"        const string pattern = {patternLiteral};");
+
+                    const int timeoutMilliseconds = 200; // Define timeout
+
+                    sb.AppendLine($"        try");
+                    sb.AppendLine("        {");
+                    sb.AppendLine(
+                        $"            EmojiMatchRegex = new Regex(pattern, RegexOptions.Compiled | RegexOptions.NonBacktracking, TimeSpan.FromMilliseconds({timeoutMilliseconds}));"
+                    );
+                    sb.AppendLine("        }");
+                    sb.AppendLine($"        catch(Exception ex)"); // Catch potential Regex creation errors
+                    sb.AppendLine("        {");
+                    sb.AppendLine(
+                        $"            Console.Error.WriteLine($\"FATAL: Failed to compile Emoji Regex: {{ex.Message}}\");"
+                    );
+                    sb.AppendLine(
+                        $"            EmojiMatchRegex = new Regex(\"(?!)\", RegexOptions.Compiled); // Fallback"
+                    );
+                    sb.AppendLine("        }");
+                }
+
                 sb.AppendLine(
                     """
-                            EmojiMatchRegex = new Regex(pattern, RegexOptions.Compiled, TimeSpan.FromMilliseconds(200));
-                        }
-                    }
+                        } // End static constructor
+                    } // End class EmojiData
                     #nullable restore
+                    #pragma warning restore
                     """
                 );
 
-                sourceProductionContext.AddSource(
-                    "EmojiData.g.cs",
-                    SourceText.From(sb.ToString(), Encoding.UTF8)
-                );
+                spc.AddSource("EmojiData.g.cs", SourceText.From(sb.ToString(), Encoding.UTF8));
             }
         );
     }
 
-    private class EmojiEntry
+    // Simple class to hold necessary emoji data from JSON
+    private sealed class EmojiEntry
     {
-        public string Name { get; set; } = string.Empty;
-        public string Slug { get; set; } = string.Empty;
-        public string Group { get; set; } = string.Empty;
-        public string Emoji_version { get; set; } = string.Empty;
-        public string Unicode_version { get; set; } = string.Empty;
-        public bool Skin_tone_support { get; set; }
+        public string? Name { get; set; }
+        // Other properties like Slug, Group, etc. can be added if needed later
     }
 }
