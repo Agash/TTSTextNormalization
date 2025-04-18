@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using TTSTextNormalization.Abstractions;
 
-// Namespace reflects DI focus
 namespace TTSTextNormalization.DependencyInjection;
 
 /// <summary>
@@ -16,11 +15,18 @@ public interface ITextNormalizationBuilder
     IServiceCollection Services { get; }
 
     /// <summary>
-    /// Adds a custom normalization rule to the pipeline.
+    /// Adds a normalization rule implementation to the pipeline configuration.
     /// </summary>
-    /// <typeparam name="T">The type of the rule implementation, must inherit from ITextNormalizationRule.</typeparam>
-    /// <param name="lifetime">The service lifetime for the rule (Singleton recommended for stateless rules).</param>
+    /// <typeparam name="T">The type of the rule implementation, must inherit from <see cref="ITextNormalizationRule"/>.</typeparam>
+    /// <param name="lifetime">The service lifetime for the rule (Singleton recommended for stateless rules, Scoped or Transient if stateful or using Scoped dependencies like IOptionsSnapshot).</param>
+    /// <param name="orderOverride">An optional integer to override the rule's default <see cref="ITextNormalizationRule.Order"/>.</param>
     /// <returns>The builder instance for fluent chaining.</returns>
-    ITextNormalizationBuilder AddRule<T>(ServiceLifetime lifetime = ServiceLifetime.Singleton)
+    /// <remarks>
+    /// This method registers the rule type <typeparamref name="T"/> with the specified <paramref name="lifetime"/>
+    /// and records the registration details (including <paramref name="orderOverride"/>) for the pipeline to use.
+    /// </remarks>
+    ITextNormalizationBuilder AddRule<T>(
+        ServiceLifetime lifetime = ServiceLifetime.Singleton,
+        int? orderOverride = null)
         where T : class, ITextNormalizationRule;
 }

@@ -1,11 +1,13 @@
-﻿using TTSTextNormalization.Rules;
+﻿using Microsoft.Extensions.Options;
+using System.Collections.Frozen;
+using TTSTextNormalization.Rules;
 
 namespace TTSTextNormalization.Tests.Rules;
 
 [TestClass]
 public class AbbreviationNormalizationRuleTests
 {
-    private readonly AbbreviationNormalizationRule _rule = new();
+    private readonly AbbreviationNormalizationRule _rule = new(Options.Create(new AbbreviationRuleOptions()));
 
     [TestMethod]
     [DataRow("", "", DisplayName = "Empty Input")]
@@ -99,5 +101,80 @@ public class AbbreviationNormalizationRuleTests
 
         // Act & Assert
         Assert.ThrowsException<ArgumentNullException>(() => _rule.Apply(input!));
+    }
+
+    [TestMethod]
+    public void Apply_WithOptions_UsesCustomAbbreviation()
+    {
+        // Arrange
+        var options = new AbbreviationRuleOptions
+        {
+            CustomAbbreviations = new Dictionary<string, string> { { "custom", "my expansion" } }
+                                    .ToFrozenDictionary(StringComparer.OrdinalIgnoreCase),
+            ReplaceDefaultAbbreviations = false // Merge
+        };
+        var ruleWithOptions = new AbbreviationNormalizationRule(Options.Create(options));
+
+        // Act
+        string result = ruleWithOptions.Apply("Test custom here.");
+
+        // Assert
+        Assert.AreEqual("Test  my expansion  here.", result);
+    }
+
+    [TestMethod]
+    public void Apply_WithOptions_OverridesDefaultAbbreviation()
+    {
+        // Arrange
+        var options = new AbbreviationRuleOptions
+        {
+            CustomAbbreviations = new Dictionary<string, string> { { "lol", "lots of love" } }
+                                    .ToFrozenDictionary(StringComparer.OrdinalIgnoreCase),
+            ReplaceDefaultAbbreviations = false // Merge
+        };
+        var ruleWithOptions = new AbbreviationNormalizationRule(Options.Create(options));
+
+        // Act
+        string result = ruleWithOptions.Apply("He said lol.");
+
+        // Assert
+        Assert.AreEqual("He said  lots of love .", result);
+    }
+
+    [TestMethod]
+    public void Apply_WithOptions_ReplacesDefaults()
+    {
+        // Arrange
+        var options = new AbbreviationRuleOptions
+        {
+            CustomAbbreviations = new Dictionary<string, string> { { "abc", "alphabet" } }
+                                    .ToFrozenDictionary(StringComparer.OrdinalIgnoreCase),
+            ReplaceDefaultAbbreviations = true // Replace
+        };
+        var ruleWithOptions = new AbbreviationNormalizationRule(Options.Create(options));
+
+        // Act
+        string result = ruleWithOptions.Apply("Test abc not lol."); // lol is a default, should not match
+
+        // Assert
+        Assert.AreEqual("Test  alphabet  not lol.", result);
+    }
+
+    [TestMethod]
+    public void Apply_WithOptions_EmptyCustomReplaceDefaults_NoMatches()
+    {
+        // Arrange
+        var options = new AbbreviationRuleOptions
+        {
+            CustomAbbreviations = null, // Or FrozenDictionary<string, string>.Empty
+            ReplaceDefaultAbbreviations = true // Replace
+        };
+        var ruleWithOptions = new AbbreviationNormalizationRule(Options.Create(options));
+
+        // Act
+        string result = ruleWithOptions.Apply("Test lol."); // lol is a default, should not match
+
+        // Assert
+        Assert.AreEqual("Test lol.", result); // No replacements expected
     }
 }

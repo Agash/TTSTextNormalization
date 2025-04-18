@@ -1,6 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using System.Collections.Frozen;
 using TTSTextNormalization.Abstractions;
 using TTSTextNormalization.DependencyInjection;
+using TTSTextNormalization.Rules;
 
 namespace TTSTextNormalization.Tests.Core;
 
@@ -8,10 +11,19 @@ namespace TTSTextNormalization.Tests.Core;
 public class TextNormalizationPipelineTests
 {
     // Helper to build the pipeline with specific rules for testing
-    private static ITextNormalizer BuildNormalizer(Action<ITextNormalizationBuilder> configure)
+    private static ITextNormalizer BuildNormalizer(Action<ITextNormalizationBuilder> configureRules, Action<IServiceCollection>? configureServices = null)
     {
         ServiceCollection services = new();
-        services.AddTextNormalization(configure);
+
+        // Allow additional service configuration (e.g., for options)
+        configureServices?.Invoke(services);
+
+        // Add logging (optional, but useful for debugging pipeline issues)
+        services.AddLogging(builder => builder.AddConsole().SetMinimumLevel(LogLevel.Trace));
+
+        // Configure the normalization pipeline rules
+        services.AddTextNormalization(configureRules);
+
         ServiceProvider provider = services.BuildServiceProvider();
         return provider.GetRequiredService<ITextNormalizer>();
     }
@@ -103,6 +115,86 @@ public class TextNormalizationPipelineTests
         Assert.AreEqual(expected, normalizer.Normalize(input));
     }
 
+    [TestMethod]
+    public void Normalize_RuleOrderOverride_ExecutesInSpecifiedOrder()
+    {
+        // Goal: Run Whitespace (default 9000) *before* Emoji (default 100)
+        ITextNormalizer normalizer = BuildNormalizer(builder =>
+        {
+            // Add Emoji with default order (100)
+            builder.AddEmojiRule();
+            // Add Whitespace but override order to run first (e.g., 50)
+            builder.AddWhitespaceNormalizationRule(orderOverride: 50);
+        });
+
+        string input = "  Hello   ✨  world  ";
+        // Expected:
+        // 1. Whitespace (Order 50): "Hello ✨ world"
+        // 2. Emoji (Order 100): "Hello  sparkles  world"
+        // Note: Final whitespace rule isn't present to clean up the emoji spaces
+        string expected = "Hello  sparkles  world";
+        Assert.AreEqual(expected, normalizer.Normalize(input));
+    }
+
+    [TestMethod]
+    public void Normalize_AbbreviationWithOptions_UsesCustomAbbreviations()
+    {
+        // Configure custom abbreviation options
+        static void configureServices(IServiceCollection services)
+        {
+            services.Configure<AbbreviationRuleOptions>(options =>
+            {
+                // Add a custom abbreviation and override a default one
+                var customMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+                {
+                    { "custom", "my custom expansion" },
+                    { "gg", "very good game" } // Override default "good game"
+                };
+                options.CustomAbbreviations = customMap.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
+                options.ReplaceDefaultAbbreviations = false; // Merge with defaults
+            });
+        }
+
+        // Build normalizer with the configured services and the abbreviation rule
+        ITextNormalizer normalizer = BuildNormalizer(
+            builder => builder.AddAbbreviationNormalizationRule(), // Add the rule
+configureServices // Provide the options configuration
+        );
+
+        string input = "This is custom, gg.";
+        // Expected: Default 'lol' should still work, 'custom' added, 'gg' overridden
+        // Note: Spaces added by rule, no final whitespace cleanup here.
+        string expected = "This is  my custom expansion ,  very good game .";
+        Assert.AreEqual(expected, normalizer.Normalize(input));
+    }
+
+    [TestMethod]
+    public void Normalize_AbbreviationWithOptions_ReplaceDefaults()
+    {
+        static void configureServices(IServiceCollection services)
+        {
+            services.Configure<AbbreviationRuleOptions>(options =>
+            {
+                var customMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+                {
+                    { "abc", "alphabet" }
+                };
+                options.CustomAbbreviations = customMap.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
+                options.ReplaceDefaultAbbreviations = true; // ONLY use custom map
+            });
+        }
+
+        ITextNormalizer normalizer = BuildNormalizer(
+            builder => builder.AddAbbreviationNormalizationRule(),
+configureServices
+        );
+
+        string input = "Use abc not lol.";
+        // Expected: 'abc' replaced, 'lol' (default) is NOT replaced
+        string expected = "Use  alphabet  not lol.";
+        Assert.AreEqual(expected, normalizer.Normalize(input));
+    }
+
     // --- Comprehensive Test with All Rules ---
     [TestMethod]
     [DataRow(
@@ -130,24 +222,32 @@ public class TextNormalizationPipelineTests
         "SOO MUCHH Textt! hundred and twenty-third", // Expect 'Textt' to remain as only 't' repeats twice
         DisplayName = "All Rules Integration Test 5 - Letter Repetition Focus - Corrected"
     )]
+    [DataRow(
+        "  ‘Test’ 1st..  soooo   cool ✨!! LOL go to https://example.com/page?q=1 Cost: $12.50 USD??? ",
+        "'Test' first. soo cool sparkles! laughing out loud go to link Cost: twelve US dollars fifty cents?",
+        DisplayName = "All Rules Integration Test 1 - With URL"
+    )]
+    [DataRow(
+        "BRB... www.test.org 2nd place!! Got 2 pay €1,000.00!! 🤑🤑",
+        "be right back. link second place! Got two pay one thousand euros! money-mouth face money-mouth face",
+        DisplayName = "All Rules Integration Test 2 - With URL"
+    )]
     public void Normalize_AllRulesEnabled_HandlesComplexInput(string input, string expected)
     {
         ITextNormalizer normalizer = BuildNormalizer(builder =>
         {
-            builder.AddBasicSanitizationRule(); // 10
-            builder.AddEmojiRule(); // 100
-            builder.AddCurrencyRule(); // 200
+            builder.AddBasicSanitizationRule();       // 10
+            builder.AddUrlNormalizationRule();        // 20
+            builder.AddEmojiRule();                   // 100
+            builder.AddCurrencyRule();                // 200
             builder.AddAbbreviationNormalizationRule(); // 300
-            builder.AddNumberNormalizationRule(); // 400
-            builder.AddExcessivePunctuationRule(); // 500
-            builder.AddLetterRepetitionRule(); // 510
+            builder.AddNumberNormalizationRule();       // 400
+            builder.AddExcessivePunctuationRule();    // 500
+            builder.AddLetterRepetitionRule();        // 510
             builder.AddWhitespaceNormalizationRule(); // 9000
         });
 
-        // Act
         string result = normalizer.Normalize(input);
-
-        // Assert
         Assert.AreEqual(expected, result);
     }
 }
