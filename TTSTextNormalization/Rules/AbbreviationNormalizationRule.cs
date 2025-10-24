@@ -55,6 +55,7 @@ public sealed partial class AbbreviationNormalizationRule : ITextNormalizationRu
             { "irl", "in real life" },
             { "rn", "right now" },
             { "fr", "for real" },
+            { "cmon", "come on" },
             // Gaming/Streaming Specific
             { "gg", "good game" },
             { "ggwp", "good game well played" },
@@ -71,6 +72,8 @@ public sealed partial class AbbreviationNormalizationRule : ITextNormalizationRu
             { "ig", "in game" },
             // YouTube Specific
             { "yt", "youtube" },
+            // PokeTuber Specific
+            { "twf", "then we fight" },
             // Technical/Setup
             { "os", "o s" },
             { "cpu", "c p u" },
