@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFrameworks>net10.0;net9.0</TargetFrameworks>
+    <LangVersion>preview</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
@@ -12,7 +13,7 @@
 	  <PackageId>Agash.TTSTextNormalization</PackageId>
 	  <Authors>Agash</Authors>
 	  <Company>Agash</Company>
-	  <Description>A .NET 9 / C# 13 class library to normalize text (emojis, currency, numbers, abbreviations) for consistent Text-to-Speech (TTS) output, tailored for chat/donation scenarios.</Description>
+	  <Description>A .NET 10 / .NET 9 class library to normalize text (emojis, currency, numbers, abbreviations) for consistent Text-to-Speech (TTS) output, tailored for chat/donation scenarios.</Description>
 	  <Copyright>Copyright (c) Agash 2025</Copyright>
 	  <PackageProjectUrl>https://github.com/Agash/TTSTextNormalization</PackageProjectUrl>
 	  <RepositoryUrl>https://github.com/Agash/TTSTextNormalization.git</RepositoryUrl>
