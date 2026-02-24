@@ -1,4 +1,4 @@
-﻿using System.Collections.Frozen;
+using System.Collections.Frozen;
 using Microsoft.Extensions.Options;
 using TTSTextNormalization.Rules;
 
@@ -129,7 +129,7 @@ public class AbbreviationNormalizationRuleTests
         string? input = null;
 
         // Act & Assert
-        Assert.ThrowsException<ArgumentNullException>(() => _rule.Apply(input!));
+        Assert.Throws<ArgumentNullException>(() => _rule.Apply(input!));
     }
 
     [TestMethod]

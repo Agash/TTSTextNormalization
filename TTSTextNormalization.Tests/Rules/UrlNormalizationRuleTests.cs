@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Options;
 using TTSTextNormalization.Rules;
 
 namespace TTSTextNormalization.Tests.Rules;
@@ -132,7 +132,7 @@ public class UrlNormalizationRuleTests
         // Arrange
         string? input = null;
         // Act & Assert
-        Assert.ThrowsException<ArgumentNullException>(() => _rule.Apply(input!));
+        Assert.Throws<ArgumentNullException>(() => _rule.Apply(input!));
     }
 
     [TestMethod]

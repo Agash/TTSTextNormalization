@@ -1,4 +1,4 @@
-﻿using TTSTextNormalization.Rules;
+using TTSTextNormalization.Rules;
 
 namespace TTSTextNormalization.Tests.Rules;
 
@@ -59,6 +59,6 @@ public class ExcessivePunctuationRuleTests
         // Arrange
         string? input = null;
         // Act & Assert
-        Assert.ThrowsException<ArgumentNullException>(() => _rule.Apply(input!));
+        Assert.Throws<ArgumentNullException>(() => _rule.Apply(input!));
     }
 }

@@ -1,4 +1,4 @@
-﻿using TTSTextNormalization.Rules;
+using TTSTextNormalization.Rules;
 
 namespace TTSTextNormalization.Tests.Rules;
 
@@ -97,6 +97,6 @@ public class NumberNormalizationRuleTests
     public void Apply_NullInput_ThrowsArgumentNullException()
     {
         string? input = null;
-        Assert.ThrowsException<ArgumentNullException>(() => _rule.Apply(input!));
+        Assert.Throws<ArgumentNullException>(() => _rule.Apply(input!));
     }
 }

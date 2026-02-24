@@ -42,10 +42,10 @@ jobs:
         run: dotnet build TTSTextNormalization.sln --configuration Release --no-restore
 
       - name: Run Tests for .NET 10.0
-        run: dotnet test TTSTextNormalization.Tests/TTSTextNormalization.Tests.csproj --configuration Release --framework net10.0 --no-build --report-trx --report-trx-filename test-results-net10.trx
+        run: dotnet test TTSTextNormalization.Tests/TTSTextNormalization.Tests.csproj --configuration Release --framework net10.0 --no-build --logger "trx;LogFileName=test-results-net10.trx"
 
       - name: Run Tests for .NET 9.0
-        run: dotnet test TTSTextNormalization.Tests/TTSTextNormalization.Tests.csproj --configuration Release --framework net9.0 --no-build --report-trx --report-trx-filename test-results-net9.trx
+        run: dotnet test TTSTextNormalization.Tests/TTSTextNormalization.Tests.csproj --configuration Release --framework net9.0 --no-build --logger "trx;LogFileName=test-results-net9.trx"
 
       - name: Upload Test Results
         if: always()

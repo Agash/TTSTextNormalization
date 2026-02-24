@@ -1,4 +1,4 @@
-﻿using TTSTextNormalization.Rules;
+using TTSTextNormalization.Rules;
 
 namespace TTSTextNormalization.Tests.Rules;
 
@@ -98,6 +98,6 @@ public class CurrencyNormalizationRuleTests
         string? input = null;
 
         // Act & Assert
-        Assert.ThrowsException<ArgumentNullException>(() => _rule.Apply(input!));
+        Assert.Throws<ArgumentNullException>(() => _rule.Apply(input!));
     }
 }

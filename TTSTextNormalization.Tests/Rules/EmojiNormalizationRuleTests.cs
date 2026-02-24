@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Options;
 using TTSTextNormalization.Rules;
 
 namespace TTSTextNormalization.Tests.Rules;
@@ -52,7 +52,7 @@ public class EmojiNormalizationRuleTests
     public void Apply_NullInput_ThrowsArgumentNullException()
     {
         string? input = null;
-        Assert.ThrowsException<ArgumentNullException>(() => _rule.Apply(input!));
+        Assert.Throws<ArgumentNullException>(() => _rule.Apply(input!));
     }
 
     [TestMethod]
