@@ -122,7 +122,7 @@ public sealed partial class AbbreviationNormalizationRule : ITextNormalizationRu
     public string Apply(string inputText)
     {
         ArgumentNullException.ThrowIfNull(inputText);
-        if (string.IsNullOrEmpty(inputText) || _effectiveAbbreviations.Count == 0)
+        if (inputText.Length == 0 || _effectiveAbbreviations.Count == 0)
             return inputText;
 
         string currentText = inputText;

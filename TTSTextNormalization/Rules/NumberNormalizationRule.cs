@@ -18,7 +18,8 @@ public sealed partial class NumberNormalizationRule : ITextNormalizationRule
     private const int RegexTimeoutMilliseconds = 150;
 
     // Keep DigitWords for the new multi-dot logic
-    private static readonly string[] DigitWords = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
+    private static readonly string[] DigitWords =
+        ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NumberNormalizationRule"/> class.
@@ -29,7 +30,7 @@ public sealed partial class NumberNormalizationRule : ITextNormalizationRule
     public string Apply(string inputText)
     {
         ArgumentNullException.ThrowIfNull(inputText);
-        if (string.IsNullOrEmpty(inputText))
+        if (inputText.Length == 0)
             return inputText;
 
         string currentText = inputText;
@@ -121,10 +122,12 @@ public sealed partial class NumberNormalizationRule : ITextNormalizationRule
                     builder.Append(integerWords).Append(" point");
                     foreach (char digitChar in fractionPartStr)
                     {
-                        if (int.TryParse(digitChar.ToString(), out int digitValue) && digitValue >= 0 && digitValue <= 9)
-                        { builder.Append(' ').Append(DigitWords[digitValue]); }
-                        else
-                        { return match.Value; }
+                        if (digitChar is < '0' or > '9')
+                        {
+                            return match.Value;
+                        }
+
+                        builder.Append(' ').Append(DigitWords[digitChar - '0']);
                     }
 
                     return $" {builder} ";
