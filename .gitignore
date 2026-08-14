@@ -362,3 +362,9 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 repomix-output.xml
+
+# The coverage scope config is source, not a coverage report.
+!coverage.settings.xml
+
+# Test run output (coverage reports)
+TestResults/
