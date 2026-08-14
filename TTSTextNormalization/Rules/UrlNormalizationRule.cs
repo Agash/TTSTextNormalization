@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using System.Text.RegularExpressions;
 using TTSTextNormalization.Abstractions;
+using TTSTextNormalization.Core;
 
 namespace TTSTextNormalization.Rules;
 
@@ -17,7 +18,7 @@ public sealed partial class UrlNormalizationRule : ITextNormalizationRule
     /// </remarks>
     public int Order => 20;
 
-    private const int RegexTimeoutMilliseconds = 200;
+    private const int RegexTimeoutMilliseconds = RegexGuard.TimeoutMilliseconds;
     private readonly string _placeholder; // Store the configured placeholder
 
     // Cache allowed schemes for performance

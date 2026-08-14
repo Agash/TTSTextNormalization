@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using TTSTextNormalization.Abstractions;
+using TTSTextNormalization.Core;
 
 namespace TTSTextNormalization.Rules;
 
@@ -15,7 +16,7 @@ public sealed partial class NumberNormalizationRule : ITextNormalizationRule
     /// <inheritdoc/>
     public int Order => 400;
 
-    private const int RegexTimeoutMilliseconds = 150;
+    private const int RegexTimeoutMilliseconds = RegexGuard.TimeoutMilliseconds;
 
     // Keep DigitWords for the new multi-dot logic
     private static readonly string[] DigitWords =

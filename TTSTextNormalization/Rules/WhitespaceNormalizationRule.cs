@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using TTSTextNormalization.Abstractions;
+using TTSTextNormalization.Core;
 
 namespace TTSTextNormalization.Rules;
 
@@ -11,7 +12,7 @@ public sealed partial class WhitespaceNormalizationRule : ITextNormalizationRule
 {
     /// <inheritdoc/>
     public int Order => 9000;
-    private const int RegexTimeoutMilliseconds = 100;
+    private const int RegexTimeoutMilliseconds = RegexGuard.TimeoutMilliseconds;
 
     /// <inheritdoc/>
     public WhitespaceNormalizationRule() { }

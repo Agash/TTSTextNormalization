@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics.CodeAnalysis;
 using TTSTextNormalization.Abstractions;
 
 namespace TTSTextNormalization.DependencyInjection;
@@ -25,7 +26,10 @@ public interface ITextNormalizationBuilder
     /// This method registers the rule type <typeparamref name="T"/> with the specified <paramref name="lifetime"/>
     /// and records the registration details (including <paramref name="orderOverride"/>) for the pipeline to use.
     /// </remarks>
-    ITextNormalizationBuilder AddRule<T>(
+    // The rule is constructed by the container, so its constructors have to survive trimming. The
+    // annotation belongs on the interface as well as the implementation: the trimmer compares them
+    // per declaration, and callers bind against this one.
+    ITextNormalizationBuilder AddRule<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(
         ServiceLifetime lifetime = ServiceLifetime.Singleton,
         int? orderOverride = null)
         where T : class, ITextNormalizationRule;

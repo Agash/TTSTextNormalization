@@ -2,6 +2,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
 using TTSTextNormalization.Abstractions;
+using TTSTextNormalization.Core;
 
 namespace TTSTextNormalization.Rules;
 
@@ -17,7 +18,7 @@ public sealed partial class BasicSanitizationRule : ITextNormalizationRule
     /// </summary>
     public int Order => 10;
 
-    private const int RegexTimeoutMilliseconds = 100;
+    private const int RegexTimeoutMilliseconds = RegexGuard.TimeoutMilliseconds;
 
     // Dictionary for replacing common "fancy" characters with simpler ASCII versions.
     private static readonly FrozenDictionary<string, string> FancyCharMap = new Dictionary<string, string>(StringComparer.Ordinal)

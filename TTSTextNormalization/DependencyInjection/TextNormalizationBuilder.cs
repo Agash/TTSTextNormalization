@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using System.Diagnostics.CodeAnalysis;
 using TTSTextNormalization.Abstractions;
 
 namespace TTSTextNormalization.DependencyInjection;
@@ -17,7 +18,7 @@ internal sealed class TextNormalizationBuilder(IServiceCollection services) : IT
     internal List<RuleRegistration> Registrations { get; } = [];
 
     /// <inheritdoc/>
-    public ITextNormalizationBuilder AddRule<T>(
+    public ITextNormalizationBuilder AddRule<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(
         ServiceLifetime lifetime = ServiceLifetime.Singleton,
         int? orderOverride = null)
         where T : class, ITextNormalizationRule

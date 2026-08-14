@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Options;
 using TTSTextNormalization.Abstractions;
+using TTSTextNormalization.Core;
 
 namespace TTSTextNormalization.Rules;
 
@@ -13,7 +14,7 @@ public sealed partial class AbbreviationNormalizationRule : ITextNormalizationRu
 {
     /// <inheritdoc/>
     public int Order => 300;
-    private const int RegexTimeoutMilliseconds = 150;
+    private const int RegexTimeoutMilliseconds = RegexGuard.TimeoutMilliseconds;
 
     private readonly FrozenDictionary<string, string> _effectiveAbbreviations;
     private readonly Regex _abbreviationRegex;

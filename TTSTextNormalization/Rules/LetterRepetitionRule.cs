@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using TTSTextNormalization.Abstractions;
+using TTSTextNormalization.Core;
 
 namespace TTSTextNormalization.Rules;
 
@@ -10,7 +11,7 @@ public sealed partial class LetterRepetitionRule : ITextNormalizationRule
 {
     /// <inheritdoc/>
     public int Order => 510;
-    private const int RegexTimeoutMilliseconds = 150; // Might need slightly more time for complex strings
+    private const int RegexTimeoutMilliseconds = RegexGuard.TimeoutMilliseconds;
 
     /// <inheritdoc/>
     public LetterRepetitionRule() { }
