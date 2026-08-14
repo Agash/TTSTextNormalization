@@ -32,7 +32,7 @@ jobs:
         uses: actions/setup-dotnet@v6
         with:
           dotnet-version: |
-            11.0.100-preview.5.26302.115
+            11.0.x
             10.x
             9.x
 
@@ -42,8 +42,10 @@ jobs:
       - name: Build Solution
         run: dotnet build TTSTextNormalization.sln --configuration Release --no-restore
 
-      - name: Run Tests for .NET 10.0
-        run: dotnet test TTSTextNormalization.Tests/TTSTextNormalization.Tests.csproj --configuration Release --framework net10.0 --no-build -- --coverage --coverage-settings coverage.settings.xml --coverage-output-format cobertura --coverage-output coverage.cobertura.xml
+      - name: Run tests
+        # Every target framework, not a hand-picked one. The project multi-targets net9.0, net10.0
+        # and net11.0, and net11.0 - the framework this ships against - was never being tested.
+        run: dotnet test TTSTextNormalization.Tests/TTSTextNormalization.Tests.csproj --configuration Release --no-build -- --coverage --coverage-settings coverage.settings.xml --coverage-output-format cobertura --coverage-output coverage.cobertura.xml
 
       - name: Summarize coverage
         # Renders the cobertura totals into the run summary. Uploading the raw XML alone means nobody
@@ -94,17 +96,6 @@ jobs:
           name: coverage
           if-no-files-found: warn
           path: '**/coverage.cobertura.xml'
-
-      - name: Run Tests for .NET 9.0
-        run: dotnet test TTSTextNormalization.Tests/TTSTextNormalization.Tests.csproj --configuration Release --framework net9.0 --no-build
-
-      - name: Upload Test Results
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: test-results
-          path: '**/*.trx'
-          retention-days: 7
 
       - name: Pack Library
         run: dotnet pack TTSTextNormalization/TTSTextNormalization.csproj --configuration Release --no-build --output ${{ env.NuGetDirectory }}
