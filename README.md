@@ -8,6 +8,7 @@
 
 ## Targets
 
+- `net11.0`
 - `net10.0` (primary)
 - `net9.0`
 

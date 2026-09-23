@@ -59,10 +59,10 @@
     <PackageReference Include="Humanizer.Core" Version="3.0.10" />
     <PackageReference
       Include="Microsoft.Extensions.DependencyInjection.Abstractions"
-      Version="10.0.11"
+      Version="10.0.12"
     />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.11" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.11" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.12" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.12" />
     <PackageReference Include="MinVer" Version="8.0.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
