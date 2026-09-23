@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <!-- Reproducibility is delegated to DotNet.ReproducibleBuilds rather than restated here.
          It sets DebugType to embedded (so the portable PDB with its Source Link map travels
@@ -13,29 +12,29 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
-	  <AssemblyName>TTSTextNormalization</AssemblyName>
-	  <RootNamespace>TTSTextNormalization</RootNamespace>
+    <AssemblyName>TTSTextNormalization</AssemblyName>
+    <RootNamespace>TTSTextNormalization</RootNamespace>
 
-	  <!-- === NuGet Packaging Properties === -->
-	  <PackageId>Agash.TTSTextNormalization</PackageId>
-	  <Authors>Agash</Authors>
-	  <Company>Agash</Company>
-	  <Description>A .NET 10 / .NET 9 class library to normalize text (emojis, currency, numbers, abbreviations) for consistent Text-to-Speech (TTS) output, tailored for chat/donation scenarios.</Description>
-	  <Copyright>Copyright (c) Agash 2025</Copyright>
-	  <PackageProjectUrl>https://github.com/Agash/TTSTextNormalization</PackageProjectUrl>
-	  <RepositoryUrl>https://github.com/Agash/TTSTextNormalization.git</RepositoryUrl>
-	  <RepositoryType>git</RepositoryType>
-	  <PackageTags>tts text normalization speech synthesis stream twitch youtube chat emoji currency number abbreviation</PackageTags>
-	  <PackageReadmeFile>README.md</PackageReadmeFile>
-	  <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
-	  <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <!-- === NuGet Packaging Properties === -->
+    <PackageId>Agash.TTSTextNormalization</PackageId>
+    <Authors>Agash</Authors>
+    <Company>Agash</Company>
+    <Description>A .NET 10 / .NET 9 class library to normalize text (emojis, currency, numbers, abbreviations) for consistent Text-to-Speech (TTS) output, tailored for chat/donation scenarios.</Description>
+    <Copyright>Copyright (c) Agash 2025</Copyright>
+    <PackageProjectUrl>https://github.com/Agash/TTSTextNormalization</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Agash/TTSTextNormalization.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>tts text normalization speech synthesis stream twitch youtube chat emoji currency number abbreviation</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 
-	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
-	  <EnablePackageValidation>true</EnablePackageValidation>
-	  <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <EnablePackageValidation>true</EnablePackageValidation>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 
-	  <MinVerTagPrefix>v</MinVerTagPrefix>
-	  <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <MinVerTagPrefix>v</MinVerTagPrefix>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
   </PropertyGroup>
 
   <ItemGroup>
@@ -44,8 +43,8 @@
 
   <ItemGroup>
     <None Remove="data-by-emoji.json" />
-	  <None Include="..\LICENSE.txt" Pack="true" PackagePath="" />
-	  <None Include="..\README.md" Pack="true" PackagePath="" />
+    <None Include="..\LICENSE.txt" Pack="true" PackagePath="" />
+    <None Include="..\README.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
   <ItemGroup>
@@ -58,21 +57,27 @@
 
   <ItemGroup>
     <PackageReference Include="Humanizer.Core" Version="3.0.10" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.11" />
+    <PackageReference
+      Include="Microsoft.Extensions.DependencyInjection.Abstractions"
+      Version="10.0.11"
+    />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.11" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.11" />
-	  <PackageReference Include="MinVer" Version="8.0.0">
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		  <PrivateAssets>all</PrivateAssets>
-	  </PackageReference>
-	  <PackageReference Include="DotNet.ReproducibleBuilds" Version="2.0.5">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-	  </PackageReference>
+    <PackageReference Include="MinVer" Version="8.0.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="DotNet.ReproducibleBuilds" Version="2.0.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TTSTextNormalization.Generator\TTSTextNormalization.EmojiDataGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference
+      Include="..\TTSTextNormalization.Generator\TTSTextNormalization.EmojiDataGenerator.csproj"
+      OutputItemType="Analyzer"
+      ReferenceOutputAssembly="false"
+    />
   </ItemGroup>
-
 </Project>

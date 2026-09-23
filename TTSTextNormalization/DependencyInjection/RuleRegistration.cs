@@ -1,5 +1,5 @@
-using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.DependencyInjection;
 using TTSTextNormalization.Abstractions;
 
 namespace TTSTextNormalization.DependencyInjection;

@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using System.Diagnostics.CodeAnalysis;
 using TTSTextNormalization.Abstractions;
 
 namespace TTSTextNormalization.DependencyInjection;
@@ -8,7 +8,8 @@ namespace TTSTextNormalization.DependencyInjection;
 /// <summary>
 /// Default implementation of <see cref="ITextNormalizationBuilder"/>.
 /// </summary>
-internal sealed class TextNormalizationBuilder(IServiceCollection services) : ITextNormalizationBuilder
+internal sealed class TextNormalizationBuilder(IServiceCollection services)
+    : ITextNormalizationBuilder
 {
     /// <inheritdoc/>
     public IServiceCollection Services { get; } =
@@ -18,9 +19,9 @@ internal sealed class TextNormalizationBuilder(IServiceCollection services) : IT
     internal List<RuleRegistration> Registrations { get; } = [];
 
     /// <inheritdoc/>
-    public ITextNormalizationBuilder AddRule<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(
-        ServiceLifetime lifetime = ServiceLifetime.Singleton,
-        int? orderOverride = null)
+    public ITextNormalizationBuilder AddRule<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T
+    >(ServiceLifetime lifetime = ServiceLifetime.Singleton, int? orderOverride = null)
         where T : class, ITextNormalizationRule
     {
         // 1. Register the concrete rule type itself so the pipeline can resolve it.

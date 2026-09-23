@@ -1,7 +1,7 @@
-﻿using Humanizer;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
+using Humanizer;
 using TTSTextNormalization.Abstractions;
 using TTSTextNormalization.Core;
 
@@ -20,7 +20,18 @@ public sealed partial class NumberNormalizationRule : ITextNormalizationRule
 
     // Keep DigitWords for the new multi-dot logic
     private static readonly string[] DigitWords =
-        ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
+    [
+        "zero",
+        "one",
+        "two",
+        "three",
+        "four",
+        "five",
+        "six",
+        "seven",
+        "eight",
+        "nine",
+    ];
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NumberNormalizationRule"/> class.
@@ -44,10 +55,17 @@ public sealed partial class NumberNormalizationRule : ITextNormalizationRule
             currentText = MultiDotNumberRegex().Replace(currentText, MultiDotNumberMatchEvaluator);
 
             // --- Pass 3: Handle Cardinals and Decimals ---
-            currentText = CardinalDecimalNumberRegex().Replace(currentText, CardinalDecimalMatchEvaluator);
+            currentText = CardinalDecimalNumberRegex()
+                .Replace(currentText, CardinalDecimalMatchEvaluator);
         }
-        catch (RegexMatchTimeoutException ex) { Console.Error.WriteLine($"Regex timeout during number normalization: {ex.Message}"); }
-        catch (Exception ex) { Console.Error.WriteLine($"Error during number normalization: {ex.Message}"); }
+        catch (RegexMatchTimeoutException ex)
+        {
+            Console.Error.WriteLine($"Regex timeout during number normalization: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error during number normalization: {ex.Message}");
+        }
 
         return currentText;
     }
@@ -56,11 +74,23 @@ public sealed partial class NumberNormalizationRule : ITextNormalizationRule
     private static string OrdinalMatchEvaluator(Match match)
     {
         string numberStr = match.Groups["number"].Value;
-        if (int.TryParse(numberStr, NumberStyles.None, CultureInfo.InvariantCulture, out int numberValue))
+        if (
+            int.TryParse(
+                numberStr,
+                NumberStyles.None,
+                CultureInfo.InvariantCulture,
+                out int numberValue
+            )
+        )
         {
             try
-            { return $" {numberValue.ToOrdinalWords()} "; } // Keep default Humanizer culture for consistency
-            catch (Exception ex) { Console.Error.WriteLine($"Humanizer.ToOrdinalWords failed: {ex.Message}"); }
+            {
+                return $" {numberValue.ToOrdinalWords()} ";
+            } // Keep default Humanizer culture for consistency
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Humanizer.ToOrdinalWords failed: {ex.Message}");
+            }
         }
 
         return match.Value;
@@ -101,14 +131,22 @@ public sealed partial class NumberNormalizationRule : ITextNormalizationRule
         return $" {builder} ";
     }
 
-
     // --- Evaluator for Cardinals/Decimals (Unchanged) ---
     private static string CardinalDecimalMatchEvaluator(Match match)
     {
         string integerPartStr = match.Groups["integer"].Value;
-        string fractionPartStr = match.Groups["fraction"].Success ? match.Groups["fraction"].Value : string.Empty;
+        string fractionPartStr = match.Groups["fraction"].Success
+            ? match.Groups["fraction"].Value
+            : string.Empty;
 
-        if (long.TryParse(integerPartStr, NumberStyles.None, CultureInfo.InvariantCulture, out long integerValue))
+        if (
+            long.TryParse(
+                integerPartStr,
+                NumberStyles.None,
+                CultureInfo.InvariantCulture,
+                out long integerValue
+            )
+        )
         {
             try
             {
@@ -134,28 +172,38 @@ public sealed partial class NumberNormalizationRule : ITextNormalizationRule
                     return $" {builder} ";
                 }
             }
-            catch (Exception ex) { Console.Error.WriteLine($"Humanizer.ToWords failed: {ex.Message}"); }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Humanizer.ToWords failed: {ex.Message}");
+            }
         }
 
         return match.Value;
     }
 
-
     // --- Regex Definitions ---
-    [GeneratedRegex(@"(?<![\p{L}\p{N}-])(?<number>\d+)(st|nd|rd|th)(?![\p{L}\p{N}-])", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, RegexTimeoutMilliseconds)]
+    [GeneratedRegex(
+        @"(?<![\p{L}\p{N}-])(?<number>\d+)(st|nd|rd|th)(?![\p{L}\p{N}-])",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant,
+        RegexTimeoutMilliseconds
+    )]
     private static partial Regex OrdinalNumberRegex();
-
 
     [GeneratedRegex(
         // Matches a number starting at a boundary, followed by at least TWO dot-number groups
         @"(?<![\p{L}\p{N}-])(?<number>\d+(?:\.\d+){2,})(?![\p{L}\p{N}-])",
         RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant,
-        matchTimeoutMilliseconds: RegexTimeoutMilliseconds)]
+        matchTimeoutMilliseconds: RegexTimeoutMilliseconds
+    )]
     private static partial Regex MultiDotNumberRegex();
 
     // Cardinal/Decimal Regex (Must  NOT match multi-dot sequences)
     // We rely on the order of operations: MultiDot runs first, so this one only gets
     // simpler integers or single-dot decimals.
-    [GeneratedRegex(@"(?<![\p{L}\p{N}-])(?<integer>\d+)(?:\.(?<fraction>\d+))?(?![\p{L}\p{N}-])", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, RegexTimeoutMilliseconds)]
+    [GeneratedRegex(
+        @"(?<![\p{L}\p{N}-])(?<integer>\d+)(?:\.(?<fraction>\d+))?(?![\p{L}\p{N}-])",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant,
+        RegexTimeoutMilliseconds
+    )]
     private static partial Regex CardinalDecimalNumberRegex();
 }

@@ -45,6 +45,11 @@ jobs:
       - name: Restore Dependencies
         run: dotnet restore TTSTextNormalization.sln
 
+      - name: Check formatting
+        run: |
+          dotnet tool restore
+          dotnet csharpier check .
+
       - name: Build Solution
         run: dotnet build TTSTextNormalization.sln --configuration Release --no-restore
 

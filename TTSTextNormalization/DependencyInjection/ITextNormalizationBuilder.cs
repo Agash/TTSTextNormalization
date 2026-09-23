@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.DependencyInjection;
 using TTSTextNormalization.Abstractions;
 
 namespace TTSTextNormalization.DependencyInjection;
@@ -29,8 +29,8 @@ public interface ITextNormalizationBuilder
     // The rule is constructed by the container, so its constructors have to survive trimming. The
     // annotation belongs on the interface as well as the implementation: the trimmer compares them
     // per declaration, and callers bind against this one.
-    ITextNormalizationBuilder AddRule<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(
-        ServiceLifetime lifetime = ServiceLifetime.Singleton,
-        int? orderOverride = null)
+    ITextNormalizationBuilder AddRule<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T
+    >(ServiceLifetime lifetime = ServiceLifetime.Singleton, int? orderOverride = null)
         where T : class, ITextNormalizationRule;
 }

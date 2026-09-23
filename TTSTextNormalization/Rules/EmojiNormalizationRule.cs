@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Options;
-using System.Text;
+﻿using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.Options;
 using TTSTextNormalization.Abstractions;
 using TTSTextNormalization.EmojiDataGenerated;
 
