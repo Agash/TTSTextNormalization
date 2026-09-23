@@ -42,10 +42,17 @@ public class ExcessivePunctuationRuleTests
     [TestMethod]
     [DataRow("Really!?!?", "Really!?!?", DisplayName = "Mixed Excessive Punctuation 1")]
     [DataRow("What??!!", "What?!", DisplayName = "Mixed Excessive Punctuation 2")]
-    [DataRow("Okay... Sure!!! No way??", "Okay. Sure! No way?", DisplayName = "Multiple Groups Mixed")]
+    [DataRow(
+        "Okay... Sure!!! No way??",
+        "Okay. Sure! No way?",
+        DisplayName = "Multiple Groups Mixed"
+    )]
     [DataRow("Test.. Test!! Test??", "Test. Test! Test?", DisplayName = "Separated Groups")]
     [DataRow("...!!!???...", ".!?.", DisplayName = "Consecutive Mixed Groups")]
-    public void Apply_ExcessiveMixedTypePunctuation_ReducesEachSequenceToOne(string input, string expected)
+    public void Apply_ExcessiveMixedTypePunctuation_ReducesEachSequenceToOne(
+        string input,
+        string expected
+    )
     {
         // Act
         string result = _rule.Apply(input);

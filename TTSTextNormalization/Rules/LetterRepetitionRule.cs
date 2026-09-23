@@ -42,7 +42,9 @@ public sealed partial class LetterRepetitionRule : ITextNormalizationRule
         }
         catch (RegexMatchTimeoutException ex)
         {
-            Console.Error.WriteLine($"Regex timeout during letter repetition normalization: {ex.Message}");
+            Console.Error.WriteLine(
+                $"Regex timeout during letter repetition normalization: {ex.Message}"
+            );
             // Return text processed so far
         }
 
@@ -57,6 +59,7 @@ public sealed partial class LetterRepetitionRule : ITextNormalizationRule
     [GeneratedRegex(
         @"([a-zA-Z])\1{2,}", // Match a letter followed by itself 2 or more times
         RegexOptions.Compiled | RegexOptions.IgnoreCase, // Case-insensitive matching
-        matchTimeoutMilliseconds: RegexTimeoutMilliseconds)]
+        matchTimeoutMilliseconds: RegexTimeoutMilliseconds
+    )]
     private static partial Regex LetterRepetitionRegex();
 }

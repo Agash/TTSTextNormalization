@@ -26,7 +26,11 @@ public class CurrencyNormalizationRuleTests
     [DataRow("$1", " one US dollar ", DisplayName = "USD Simple ($)")]
     [DataRow("$1.00", " one US dollar ", DisplayName = "USD Simple zero cents ($)")]
     [DataRow("$1.50", " one US dollar fifty cents ", DisplayName = "USD with Cents ($)")]
-    [DataRow("$1,234.56", " one thousand two hundred and thirty-four US dollars fifty-six cents ", DisplayName = "USD Large with Cents ($)")]
+    [DataRow(
+        "$1,234.56",
+        " one thousand two hundred and thirty-four US dollars fifty-six cents ",
+        DisplayName = "USD Large with Cents ($)"
+    )]
     [DataRow("£10", " ten British pounds ", DisplayName = "GBP Simple (£)")]
     [DataRow("£0.50", " zero British pounds fifty pence ", DisplayName = "GBP Only Pence (£)")]
     [DataRow("€100", " one hundred euros ", DisplayName = "EUR Simple (€)")]
@@ -36,7 +40,11 @@ public class CurrencyNormalizationRuleTests
     [DataRow("1 USD", " one US dollar ", DisplayName = "USD Code Simple")]
     [DataRow("1.00 USD", " one US dollar ", DisplayName = "USD Code zero cents")]
     [DataRow("1.50 USD", " one US dollar fifty cents ", DisplayName = "USD Code with Cents")]
-    [DataRow("1,234.56 USD", " one thousand two hundred and thirty-four US dollars fifty-six cents ", DisplayName = "USD Code Large")]
+    [DataRow(
+        "1,234.56 USD",
+        " one thousand two hundred and thirty-four US dollars fifty-six cents ",
+        DisplayName = "USD Code Large"
+    )]
     [DataRow("10 GBP", " ten British pounds ", DisplayName = "GBP Code Simple")]
     [DataRow("0.50 GBP", " zero British pounds fifty pence ", DisplayName = "GBP Code Only Pence")]
     [DataRow("100 EUR", " one hundred euros ", DisplayName = "EUR Code Simple")]
@@ -53,9 +61,21 @@ public class CurrencyNormalizationRuleTests
     [DataRow("€100 EUR", " one hundred euros ", DisplayName = "EUR Combined (€)")]
     [DataRow("¥500 JPY", " five hundred Japanese yen ", DisplayName = "JPY Combined (¥)")]
     [DataRow("10 USD $", " ten US dollars  $", DisplayName = "USD Combined with Trailing Symbol")]
-    [DataRow("10 GBP £", " ten British pounds  £", DisplayName = "GBP Combined with Trailing Symbol")]
-    [DataRow("100 EUR €", " one hundred euros  €", DisplayName = "EUR Combined with Trailing Symbol")]
-    [DataRow("500 JPY ¥", " five hundred Japanese yen  ¥", DisplayName = "JPY Combined with Trailing Symbol")]
+    [DataRow(
+        "10 GBP £",
+        " ten British pounds  £",
+        DisplayName = "GBP Combined with Trailing Symbol"
+    )]
+    [DataRow(
+        "100 EUR €",
+        " one hundred euros  €",
+        DisplayName = "EUR Combined with Trailing Symbol"
+    )]
+    [DataRow(
+        "500 JPY ¥",
+        " five hundred Japanese yen  ¥",
+        DisplayName = "JPY Combined with Trailing Symbol"
+    )]
     public void Apply_KnownCurrencies_ReplacesWithSpokenForm(string input, string expected)
     {
         // Act
@@ -67,9 +87,21 @@ public class CurrencyNormalizationRuleTests
 
     [TestMethod]
     [DataRow("Send $10 now", "Send  ten US dollars  now", DisplayName = "Currency within sentence")]
-    [DataRow("It costs 50 EUR.", "It costs  fifty euros .", DisplayName = "Currency at end of sentence")]
-    [DataRow("It costs 50 EUR now.", "It costs  fifty euros  now.", DisplayName = "Currency within sentence")]
-    [DataRow("$5 and £10", " five US dollars  and  ten British pounds ", DisplayName = "Multiple different currencies")]
+    [DataRow(
+        "It costs 50 EUR.",
+        "It costs  fifty euros .",
+        DisplayName = "Currency at end of sentence"
+    )]
+    [DataRow(
+        "It costs 50 EUR now.",
+        "It costs  fifty euros  now.",
+        DisplayName = "Currency within sentence"
+    )]
+    [DataRow(
+        "$5 and £10",
+        " five US dollars  and  ten British pounds ",
+        DisplayName = "Multiple different currencies"
+    )]
     public void Apply_CurrencyInContext_ReplacesCorrectly(string input, string expected)
     {
         // Act

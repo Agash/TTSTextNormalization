@@ -35,7 +35,11 @@ public class WhitespaceNormalizationRuleTests
     [DataRow("word\t\tword", "word word", DisplayName = "Multiple Tabs Between Words")]
     [DataRow("word \t word", "word word", DisplayName = "Mixed Space/Tab Between Words")]
     [DataRow("word   \t  word", "word word", DisplayName = "Multiple Mixed Whitespace")]
-    [DataRow(" first   second   third ", "first second third", DisplayName = "Multiple Groups and Trim")]
+    [DataRow(
+        " first   second   third ",
+        "first second third",
+        DisplayName = "Multiple Groups and Trim"
+    )]
     public void Apply_CollapsesMultipleInternalWhitespaceToOneSpace(string input, string expected)
     {
         string result = _rule.Apply(input);
@@ -61,7 +65,11 @@ public class WhitespaceNormalizationRuleTests
     [DataRow("Hello ;", "Hello;", DisplayName = "Removes space before ;")]
     [DataRow("Hello :", "Hello:", DisplayName = "Removes space before :")]
     [DataRow("Hello  !", "Hello!", DisplayName = "Removes multiple spaces before !")]
-    [DataRow("Word1 ! Word2 ?", "Word1! Word2?", DisplayName = "Multiple spaces before punctuation")]
+    [DataRow(
+        "Word1 ! Word2 ?",
+        "Word1! Word2?",
+        DisplayName = "Multiple spaces before punctuation"
+    )]
     public void Apply_RemovesSpaceBeforePunctuation(string input, string expected)
     {
         // Act
@@ -91,9 +99,17 @@ public class WhitespaceNormalizationRuleTests
     }
 
     [TestMethod]
-    [DataRow("Hello ! World . Bye ?", "Hello! World. Bye?", DisplayName = "Integration - Before and After")]
+    [DataRow(
+        "Hello ! World . Bye ?",
+        "Hello! World. Bye?",
+        DisplayName = "Integration - Before and After"
+    )]
     [DataRow("Test   :   Okay", "Test: Okay", DisplayName = "Integration - Collapse and Spacing")]
-    [DataRow("Multiple   things , like   this ; end . ", "Multiple things, like this; end.", DisplayName = "Integration - Full Sentence")]
+    [DataRow(
+        "Multiple   things , like   this ; end . ",
+        "Multiple things, like this; end.",
+        DisplayName = "Integration - Full Sentence"
+    )]
     public void Apply_HandlesPunctuationSpacingIntegration(string input, string expected)
     {
         // Act
@@ -101,7 +117,6 @@ public class WhitespaceNormalizationRuleTests
         // Assert
         Assert.AreEqual(expected, result);
     }
-
 
     [TestMethod]
     public void Apply_NullInput_ThrowsArgumentNullException()

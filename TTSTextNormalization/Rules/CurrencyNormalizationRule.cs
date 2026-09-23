@@ -1,8 +1,8 @@
-﻿using Humanizer;
-using System.Collections.Frozen;
+﻿using System.Collections.Frozen;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
+using Humanizer;
 using TTSTextNormalization.Abstractions;
 using TTSTextNormalization.Core;
 

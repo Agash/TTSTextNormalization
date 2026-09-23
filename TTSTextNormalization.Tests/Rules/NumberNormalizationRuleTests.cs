@@ -13,7 +13,11 @@ public class NumberNormalizationRuleTests
     [DataRow("No numbers here", "No numbers here", DisplayName = "Text without Numbers")]
     [DataRow("Item1", "Item1", DisplayName = "Number attached to text")]
     // FIX: Update expectation for multi-dot handling
-    [DataRow("Version 1.2.3", "Version  one  point two  point three ", DisplayName = "Version Number Multi-Dot")]
+    [DataRow(
+        "Version 1.2.3",
+        "Version  one  point two  point three ",
+        DisplayName = "Version Number Multi-Dot"
+    )]
     public void Apply_NoStandaloneOrPartial_HandlesCorrectly(string input, string expected)
     {
         // Act
@@ -34,9 +38,17 @@ public class NumberNormalizationRuleTests
     [DataRow("123", " one hundred and twenty-three ", DisplayName = "Cardinal 123 (with and)")]
     [DataRow("1000", " one thousand ", DisplayName = "Cardinal 1000")]
     [DataRow("1001", " one thousand and one ", DisplayName = "Cardinal 1001 (with and)")]
-    [DataRow("1234", " one thousand two hundred and thirty-four ", DisplayName = "Cardinal 1234 (with and)")]
+    [DataRow(
+        "1234",
+        " one thousand two hundred and thirty-four ",
+        DisplayName = "Cardinal 1234 (with and)"
+    )]
     [DataRow("10000", " ten thousand ", DisplayName = "Cardinal 10k")]
-    [DataRow("123456", " one hundred and twenty-three thousand four hundred and fifty-six ", DisplayName = "Cardinal Large (with and)")]
+    [DataRow(
+        "123456",
+        " one hundred and twenty-three thousand four hundred and fifty-six ",
+        DisplayName = "Cardinal Large (with and)"
+    )]
     [DataRow("1000000", " one million ", DisplayName = "Cardinal 1M")]
     public void Apply_StandaloneIntegers_ReplacesWithWords(string input, string expected)
     {
@@ -63,7 +75,11 @@ public class NumberNormalizationRuleTests
     [TestMethod]
     [DataRow("1.5", " one point five ", DisplayName = "Decimal 1.5")]
     [DataRow("0.25", " zero point two five ", DisplayName = "Decimal 0.25")]
-    [DataRow("123.456", " one hundred and twenty-three point four five six ", DisplayName = "Decimal Long Fraction")]
+    [DataRow(
+        "123.456",
+        " one hundred and twenty-three point four five six ",
+        DisplayName = "Decimal Long Fraction"
+    )]
     [DataRow("10.0", " ten point zero ", DisplayName = "Decimal Trailing Zero")]
     public void Apply_StandaloneDecimals_ReplacesWithWords(string input, string expected)
     {
@@ -72,12 +88,28 @@ public class NumberNormalizationRuleTests
     }
 
     [TestMethod]
-    [DataRow("Call 911 now", "Call  nine hundred and eleven  now", DisplayName = "Cardinal in sentence")]
-    [DataRow("There are 3 apples.", "There are  three  apples.", DisplayName = "Cardinal at end of word")]
+    [DataRow(
+        "Call 911 now",
+        "Call  nine hundred and eleven  now",
+        DisplayName = "Cardinal in sentence"
+    )]
+    [DataRow(
+        "There are 3 apples.",
+        "There are  three  apples.",
+        DisplayName = "Cardinal at end of word"
+    )]
     [DataRow("Order 1 and 2", "Order  one  and  two ", DisplayName = "Multiple cardinals")]
-    [DataRow("It's 1.5 meters", "It's  one point five  meters", DisplayName = "Decimal in sentence")]
+    [DataRow(
+        "It's 1.5 meters",
+        "It's  one point five  meters",
+        DisplayName = "Decimal in sentence"
+    )]
     [DataRow("Get the 1st item", "Get the  first  item", DisplayName = "Ordinal in sentence")]
-    [DataRow("Mix of 1st, 2 and 3.14", "Mix of  first ,  two  and  three point one four ", DisplayName = "Mixed numbers")]
+    [DataRow(
+        "Mix of 1st, 2 and 3.14",
+        "Mix of  first ,  two  and  three point one four ",
+        DisplayName = "Mixed numbers"
+    )]
     public void Apply_NumbersInContext_ReplacesCorrectly(string input, string expected)
     {
         string result = _rule.Apply(input);

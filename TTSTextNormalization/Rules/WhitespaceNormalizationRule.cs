@@ -46,7 +46,9 @@ public sealed partial class WhitespaceNormalizationRule : ITextNormalizationRule
         }
         catch (RegexMatchTimeoutException ex)
         {
-            Console.Error.WriteLine($"Regex timeout during whitespace normalization step: {ex.Message}");
+            Console.Error.WriteLine(
+                $"Regex timeout during whitespace normalization step: {ex.Message}"
+            );
             // Depending on which step timed out, currentText might be partially processed.
             // Returning it is usually better than returning the original input.
         }
@@ -61,7 +63,11 @@ public sealed partial class WhitespaceNormalizationRule : ITextNormalizationRule
     /// <summary>
     /// Regex for Step 2: Collapse multiple whitespace. Uses NonBacktracking.
     /// </summary>
-    [GeneratedRegex(@"\s{2,}", RegexOptions.Compiled | RegexOptions.NonBacktracking, RegexTimeoutMilliseconds)]
+    [GeneratedRegex(
+        @"\s{2,}",
+        RegexOptions.Compiled | RegexOptions.NonBacktracking,
+        RegexTimeoutMilliseconds
+    )]
     private static partial Regex MultipleWhitespaceRegex();
 
     /// <summary>
@@ -69,7 +75,11 @@ public sealed partial class WhitespaceNormalizationRule : ITextNormalizationRule
     /// \s+ : one or more whitespace chars
     /// ([.,!?;:]) : Captures one of the punctuation marks into group 1
     /// </summary>
-    [GeneratedRegex(@"\s+([.,!?;:])", RegexOptions.Compiled | RegexOptions.NonBacktracking, RegexTimeoutMilliseconds)]
+    [GeneratedRegex(
+        @"\s+([.,!?;:])",
+        RegexOptions.Compiled | RegexOptions.NonBacktracking,
+        RegexTimeoutMilliseconds
+    )]
     private static partial Regex SpaceBeforePunctuationRegex();
 
     /// <summary>

@@ -21,15 +21,22 @@ public sealed partial class BasicSanitizationRule : ITextNormalizationRule
     private const int RegexTimeoutMilliseconds = RegexGuard.TimeoutMilliseconds;
 
     // Dictionary for replacing common "fancy" characters with simpler ASCII versions.
-    private static readonly FrozenDictionary<string, string> FancyCharMap = new Dictionary<string, string>(StringComparer.Ordinal)
+    private static readonly FrozenDictionary<string, string> FancyCharMap = new Dictionary<
+        string,
+        string
+    >(StringComparer.Ordinal)
     {
-        { "“", "\"" }, { "”", "\"" }, // Double quotes
-        { "‘", "'" }, { "’", "'" }, // Single quotes/apostrophes
-        { "«", "\"" }, { "»", "\"" }, // Guillemets to double quotes
-        { "‹", "'" }, { "›", "'" }, // // FIX: Added Single Guillemets
+        { "“", "\"" },
+        { "”", "\"" }, // Double quotes
+        { "‘", "'" },
+        { "’", "'" }, // Single quotes/apostrophes
+        { "«", "\"" },
+        { "»", "\"" }, // Guillemets to double quotes
+        { "‹", "'" },
+        { "›", "'" }, // // FIX: Added Single Guillemets
         { "…", "..." }, // Ellipsis
         { "—", "-" }, // Em dash
-        { "–", "-" }, // En dash            
+        { "–", "-" }, // En dash
     }.ToFrozenDictionary(StringComparer.Ordinal);
 
     /// <summary>
@@ -63,7 +70,9 @@ public sealed partial class BasicSanitizationRule : ITextNormalizationRule
         }
         catch (RegexMatchTimeoutException ex)
         {
-            Console.Error.WriteLine($"Regex timeout during control char sanitization: {ex.Message}");
+            Console.Error.WriteLine(
+                $"Regex timeout during control char sanitization: {ex.Message}"
+            );
             // Continue with the text processed so far if timeout occurs
         }
 
@@ -82,7 +91,6 @@ public sealed partial class BasicSanitizationRule : ITextNormalizationRule
         }
         // Alternative using LINQ Aggregate + Replace (potentially less efficient due to allocations):
         // currentText = FancyCharMap.Aggregate(currentText, (current, pair) => current.Replace(pair.Key, pair.Value));
-
 
         // 4. Final check: ensure no null characters remain (belt-and-suspenders)
         // Although the regex should handle \u0000, an explicit check is cheap insurance.
@@ -103,12 +111,18 @@ public sealed partial class BasicSanitizationRule : ITextNormalizationRule
     {
         // Check for a few common fancy chars. Can be expanded.
         // This avoids iterating the dictionary if none are present.
-        return text.Contains('“') || text.Contains('”') || text.Contains('‘') ||
-               text.Contains('’') || text.Contains('…') || text.Contains('—') ||
-               text.Contains('–') || text.Contains('«') || text.Contains('»') ||
-               text.Contains('‹') || text.Contains('›');
+        return text.Contains('“')
+            || text.Contains('”')
+            || text.Contains('‘')
+            || text.Contains('’')
+            || text.Contains('…')
+            || text.Contains('—')
+            || text.Contains('–')
+            || text.Contains('«')
+            || text.Contains('»')
+            || text.Contains('‹')
+            || text.Contains('›');
     }
-
 
     /// <summary>
     /// Source-Generated Regex to find common problematic Unicode characters.
@@ -123,6 +137,7 @@ public sealed partial class BasicSanitizationRule : ITextNormalizationRule
     [GeneratedRegex(
         @"[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F\u200B-\u200D\uFEFF]",
         RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.NonBacktracking, // CultureInvariant is fine for code points
-        matchTimeoutMilliseconds: RegexTimeoutMilliseconds)]
+        matchTimeoutMilliseconds: RegexTimeoutMilliseconds
+    )]
     private static partial Regex RemoveControlCharsRegex();
 }

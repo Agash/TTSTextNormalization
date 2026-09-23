@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFrameworks>net10.0;net9.0;net11.0</TargetFrameworks>
     <OutputType>Exe</OutputType>
@@ -21,7 +20,10 @@
     </PackageReference>
 
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.11" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.11" />
+    <PackageReference
+      Include="Microsoft.Extensions.DependencyInjection.Abstractions"
+      Version="10.0.11"
+    />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.11" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="10.0.11" />
   </ItemGroup>
@@ -29,5 +31,4 @@
   <ItemGroup>
     <ProjectReference Include="..\TTSTextNormalization\TTSTextNormalization.csproj" />
   </ItemGroup>
-
 </Project>

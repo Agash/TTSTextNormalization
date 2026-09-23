@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Options;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
+using Microsoft.Extensions.Options;
 using TTSTextNormalization.Abstractions;
 using TTSTextNormalization.Core;
 
@@ -25,7 +25,7 @@ public sealed partial class UrlNormalizationRule : ITextNormalizationRule
     private static readonly HashSet<string> AllowedSchemes = new(StringComparer.OrdinalIgnoreCase)
     {
         Uri.UriSchemeHttp,
-        Uri.UriSchemeHttps
+        Uri.UriSchemeHttps,
     };
 
     /// <summary>
@@ -78,13 +78,18 @@ public sealed partial class UrlNormalizationRule : ITextNormalizationRule
         string potentialUrl = match.Value;
 
         // Prepend "http://" to www. URLs for Uri.TryCreate, as it often requires a scheme.
-        string uriStringToValidate = potentialUrl.StartsWith("www.", StringComparison.OrdinalIgnoreCase)
+        string uriStringToValidate = potentialUrl.StartsWith(
+            "www.",
+            StringComparison.OrdinalIgnoreCase
+        )
             ? $"http://{potentialUrl}"
             : potentialUrl;
 
         // Validate using Uri.TryCreate
-        if (Uri.TryCreate(uriStringToValidate, UriKind.Absolute, out Uri? uriResult)
-            && AllowedSchemes.Contains(uriResult.Scheme))
+        if (
+            Uri.TryCreate(uriStringToValidate, UriKind.Absolute, out Uri? uriResult)
+            && AllowedSchemes.Contains(uriResult.Scheme)
+        )
         {
             // It's a valid HTTP/HTTPS URI, replace it with the configured placeholder.
             return _placeholder;
@@ -104,21 +109,28 @@ public sealed partial class UrlNormalizationRule : ITextNormalizationRule
     /// </summary>
     [GeneratedRegex(
         // Lookbehind: Not preceded by letter, number, or @
-        @"(?<![\p{L}\p{N}@])" +
-        // Main structure: scheme or www.
-        @"(?:" +
-            @"https?://" + // Scheme
-            @"|" +
-            @"www\." +     // OR www.
-        @")" +
-        // Host/Path part: Needs at least one non-delimiter char after scheme/www.
-        // Matches common URL characters greedily but stops before whitespace/brackets etc.
-        // It must end with a letter/number/slash to be plausible.
-        @"[^\s<>\""()]+" + // Match one or more non-space/bracket chars
-        @"(?<=[\p{L}\p{N}/])" + // Lookbehind: Ensure the last matched char is plausible end
-                                // Lookahead: Must be followed by a boundary
-        @"(?=[\s<>\""().,!?;:]|$)",
+        @"(?<![\p{L}\p{N}@])"
+            +
+            // Main structure: scheme or www.
+            @"(?:"
+            + @"https?://"
+            + // Scheme
+            @"|"
+            + @"www\."
+            + // OR www.
+            @")"
+            +
+            // Host/Path part: Needs at least one non-delimiter char after scheme/www.
+            // Matches common URL characters greedily but stops before whitespace/brackets etc.
+            // It must end with a letter/number/slash to be plausible.
+            @"[^\s<>\""()]+"
+            + // Match one or more non-space/bracket chars
+            @"(?<=[\p{L}\p{N}/])"
+            + // Lookbehind: Ensure the last matched char is plausible end
+            // Lookahead: Must be followed by a boundary
+            @"(?=[\s<>\""().,!?;:]|$)",
         RegexOptions.Compiled | RegexOptions.IgnoreCase,
-        matchTimeoutMilliseconds: RegexTimeoutMilliseconds)]
+        matchTimeoutMilliseconds: RegexTimeoutMilliseconds
+    )]
     private static partial Regex PotentialUrlRegex();
 }

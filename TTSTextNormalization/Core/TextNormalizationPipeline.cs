@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
+using Microsoft.Extensions.Logging;
 using TTSTextNormalization.Abstractions;
 using TTSTextNormalization.DependencyInjection;
 
@@ -30,7 +30,8 @@ public sealed class TextNormalizationPipeline : ITextNormalizer
     public TextNormalizationPipeline(
         IServiceProvider serviceProvider,
         IEnumerable<RuleRegistration> registrations,
-        ILogger<TextNormalizationPipeline>? logger = null)
+        ILogger<TextNormalizationPipeline>? logger = null
+    )
     {
         ArgumentNullException.ThrowIfNull(serviceProvider);
         ArgumentNullException.ThrowIfNull(registrations);
@@ -38,7 +39,9 @@ public sealed class TextNormalizationPipeline : ITextNormalizer
 
         List<(ITextNormalizationRule Rule, int EffectiveOrder)> resolvedAndOrderedRules = [];
 
-        _logger?.LogDebug("Constructing TextNormalizationPipeline. Resolving and ordering rules...");
+        _logger?.LogDebug(
+            "Constructing TextNormalizationPipeline. Resolving and ordering rules..."
+        );
 
         foreach (RuleRegistration registration in registrations)
         {
@@ -50,8 +53,12 @@ public sealed class TextNormalizationPipeline : ITextNormalizer
                 if (serviceInstance is not ITextNormalizationRule ruleInstance)
                 {
                     // This should not happen if AddRule was used correctly, but check defensively
-                    string errorMsg = $"Resolved service for type '{registration.RuleType.FullName}' does not implement ITextNormalizationRule.";
-                    _logger?.LogError("Resolved service for type '{RegistrationType}' does not implement ITextNormalizationRule.", registration.RuleType.FullName);
+                    string errorMsg =
+                        $"Resolved service for type '{registration.RuleType.FullName}' does not implement ITextNormalizationRule.";
+                    _logger?.LogError(
+                        "Resolved service for type '{RegistrationType}' does not implement ITextNormalizationRule.",
+                        registration.RuleType.FullName
+                    );
                     throw new InvalidOperationException(errorMsg);
                 }
 
@@ -60,13 +67,22 @@ public sealed class TextNormalizationPipeline : ITextNormalizer
 
                 resolvedAndOrderedRules.Add((ruleInstance, effectiveOrder));
 
-                _logger?.LogTrace("Resolved rule '{RuleType}' with effective order {Order}.", registration.RuleType.Name, effectiveOrder);
+                _logger?.LogTrace(
+                    "Resolved rule '{RuleType}' with effective order {Order}.",
+                    registration.RuleType.Name,
+                    effectiveOrder
+                );
             }
             catch (Exception ex)
             {
                 // Catch resolution errors
-                string errorMsg = $"Failed to resolve or process rule registration for type '{registration.RuleType.FullName}'. See inner exception.";
-                _logger?.LogError(ex, "Failed to resolve or process rule registration for type '{RegistrationType}'. See inner exception.", registration.RuleType.FullName);
+                string errorMsg =
+                    $"Failed to resolve or process rule registration for type '{registration.RuleType.FullName}'. See inner exception.";
+                _logger?.LogError(
+                    ex,
+                    "Failed to resolve or process rule registration for type '{RegistrationType}'. See inner exception.",
+                    registration.RuleType.FullName
+                );
                 throw new InvalidOperationException(errorMsg, ex);
             }
         }
@@ -78,12 +94,19 @@ public sealed class TextNormalizationPipeline : ITextNormalizer
             .ToList()
             .AsReadOnly();
 
-        _logger?.LogInformation("TextNormalizationPipeline constructed with {RuleCount} rules.", _orderedRules.Count);
+        _logger?.LogInformation(
+            "TextNormalizationPipeline constructed with {RuleCount} rules.",
+            _orderedRules.Count
+        );
         if (_logger?.IsEnabled(LogLevel.Debug) ?? false)
         {
             foreach (ITextNormalizationRule rule in _orderedRules)
             {
-                _logger.LogDebug(" > Rule: {RuleName} (Order: {Order})", rule.GetType().Name, rule.Order); // Log default order for reference
+                _logger.LogDebug(
+                    " > Rule: {RuleName} (Order: {Order})",
+                    rule.GetType().Name,
+                    rule.Order
+                ); // Log default order for reference
             }
         }
     }
@@ -114,7 +137,11 @@ public sealed class TextNormalizationPipeline : ITextNormalizer
                 currentText = rule.Apply(currentText);
                 if (currentText != previousText && (_logger?.IsEnabled(LogLevel.Trace) ?? false))
                 {
-                    _logger?.LogTrace("Rule {RuleName} modified text to: \"{CurrentText}\"", ruleName, currentText);
+                    _logger?.LogTrace(
+                        "Rule {RuleName} modified text to: \"{CurrentText}\"",
+                        ruleName,
+                        currentText
+                    );
                 }
                 else if (currentText == previousText)
                 {
@@ -123,13 +150,20 @@ public sealed class TextNormalizationPipeline : ITextNormalizer
 
                 if (string.IsNullOrEmpty(currentText))
                 {
-                    _logger?.LogDebug("Text became empty after rule {RuleName}, exiting pipeline early.", ruleName);
+                    _logger?.LogDebug(
+                        "Text became empty after rule {RuleName}, exiting pipeline early.",
+                        ruleName
+                    );
                     break;
                 }
             }
             catch (Exception ex)
             {
-                _logger?.LogError(ex, "Error applying rule {RuleName}. Skipping rule and continuing pipeline.", ruleName);
+                _logger?.LogError(
+                    ex,
+                    "Error applying rule {RuleName}. Skipping rule and continuing pipeline.",
+                    ruleName
+                );
                 // Optionally re-throw or handle differently, for now continue pipeline
                 // return inputText; // Or return original on error?
             }

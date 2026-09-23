@@ -22,7 +22,8 @@ public static class TextNormalizationServiceCollectionExtensions
     /// <exception cref="ArgumentNullException">Thrown if services or configure is null.</exception>
     public static IServiceCollection AddTextNormalization(
         this IServiceCollection services,
-        Action<ITextNormalizationBuilder> configure)
+        Action<ITextNormalizationBuilder> configure
+    )
     {
         ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(configure);
@@ -53,7 +54,9 @@ public static class TextNormalizationServiceCollectionExtensions
     /// <param name="orderOverride">Optional order override.</param>
     /// <returns>The builder instance for fluent chaining.</returns>
     public static ITextNormalizationBuilder AddBasicSanitizationRule(
-        this ITextNormalizationBuilder builder, int? orderOverride = null)
+        this ITextNormalizationBuilder builder,
+        int? orderOverride = null
+    )
     {
         ArgumentNullException.ThrowIfNull(builder);
         return builder.AddRule<BasicSanitizationRule>(ServiceLifetime.Singleton, orderOverride);
@@ -68,7 +71,9 @@ public static class TextNormalizationServiceCollectionExtensions
     /// <param name="orderOverride">Optional order override.</param>
     /// <returns>The builder instance for fluent chaining.</returns>
     public static ITextNormalizationBuilder AddEmojiRule(
-        this ITextNormalizationBuilder builder, int? orderOverride = null)
+        this ITextNormalizationBuilder builder,
+        int? orderOverride = null
+    )
     {
         ArgumentNullException.ThrowIfNull(builder);
         return builder.AddRule<EmojiNormalizationRule>(ServiceLifetime.Singleton, orderOverride);
@@ -82,7 +87,9 @@ public static class TextNormalizationServiceCollectionExtensions
     /// <param name="orderOverride">Optional order override.</param>
     /// <returns>The builder instance for fluent chaining.</returns>
     public static ITextNormalizationBuilder AddCurrencyRule(
-        this ITextNormalizationBuilder builder, int? orderOverride = null)
+        this ITextNormalizationBuilder builder,
+        int? orderOverride = null
+    )
     {
         ArgumentNullException.ThrowIfNull(builder);
         return builder.AddRule<CurrencyNormalizationRule>(ServiceLifetime.Singleton, orderOverride);
@@ -97,10 +104,15 @@ public static class TextNormalizationServiceCollectionExtensions
     /// <param name="orderOverride">Optional order override.</param>
     /// <returns>The builder instance for fluent chaining.</returns>
     public static ITextNormalizationBuilder AddAbbreviationNormalizationRule(
-        this ITextNormalizationBuilder builder, int? orderOverride = null)
+        this ITextNormalizationBuilder builder,
+        int? orderOverride = null
+    )
     {
         ArgumentNullException.ThrowIfNull(builder);
-        return builder.AddRule<AbbreviationNormalizationRule>(ServiceLifetime.Singleton, orderOverride);
+        return builder.AddRule<AbbreviationNormalizationRule>(
+            ServiceLifetime.Singleton,
+            orderOverride
+        );
     }
 
     /// <summary>
@@ -111,7 +123,9 @@ public static class TextNormalizationServiceCollectionExtensions
     /// <param name="orderOverride">Optional order override.</param>
     /// <returns>The builder instance for fluent chaining.</returns>
     public static ITextNormalizationBuilder AddNumberNormalizationRule(
-        this ITextNormalizationBuilder builder, int? orderOverride = null)
+        this ITextNormalizationBuilder builder,
+        int? orderOverride = null
+    )
     {
         ArgumentNullException.ThrowIfNull(builder);
         return builder.AddRule<NumberNormalizationRule>(ServiceLifetime.Singleton, orderOverride);
@@ -125,7 +139,9 @@ public static class TextNormalizationServiceCollectionExtensions
     /// <param name="orderOverride">Optional order override.</param>
     /// <returns>The builder instance for fluent chaining.</returns>
     public static ITextNormalizationBuilder AddExcessivePunctuationRule(
-        this ITextNormalizationBuilder builder, int? orderOverride = null)
+        this ITextNormalizationBuilder builder,
+        int? orderOverride = null
+    )
     {
         ArgumentNullException.ThrowIfNull(builder);
         return builder.AddRule<ExcessivePunctuationRule>(ServiceLifetime.Singleton, orderOverride);
@@ -139,7 +155,9 @@ public static class TextNormalizationServiceCollectionExtensions
     /// <param name="orderOverride">Optional order override.</param>
     /// <returns>The builder instance for fluent chaining.</returns>
     public static ITextNormalizationBuilder AddLetterRepetitionRule(
-        this ITextNormalizationBuilder builder, int? orderOverride = null)
+        this ITextNormalizationBuilder builder,
+        int? orderOverride = null
+    )
     {
         ArgumentNullException.ThrowIfNull(builder);
         return builder.AddRule<LetterRepetitionRule>(ServiceLifetime.Singleton, orderOverride);
@@ -154,7 +172,9 @@ public static class TextNormalizationServiceCollectionExtensions
     /// <param name="orderOverride">Optional order override.</param>
     /// <returns>The builder instance for fluent chaining.</returns>
     public static ITextNormalizationBuilder AddUrlNormalizationRule(
-        this ITextNormalizationBuilder builder, int? orderOverride = null)
+        this ITextNormalizationBuilder builder,
+        int? orderOverride = null
+    )
     {
         ArgumentNullException.ThrowIfNull(builder);
         return builder.AddRule<UrlNormalizationRule>(ServiceLifetime.Singleton, orderOverride);
@@ -168,9 +188,14 @@ public static class TextNormalizationServiceCollectionExtensions
     /// <param name="orderOverride">Optional order override.</param>
     /// <returns>The builder instance for fluent chaining.</returns>
     public static ITextNormalizationBuilder AddWhitespaceNormalizationRule(
-        this ITextNormalizationBuilder builder, int? orderOverride = null)
+        this ITextNormalizationBuilder builder,
+        int? orderOverride = null
+    )
     {
         ArgumentNullException.ThrowIfNull(builder);
-        return builder.AddRule<WhitespaceNormalizationRule>(ServiceLifetime.Singleton, orderOverride);
+        return builder.AddRule<WhitespaceNormalizationRule>(
+            ServiceLifetime.Singleton,
+            orderOverride
+        );
     }
 }
