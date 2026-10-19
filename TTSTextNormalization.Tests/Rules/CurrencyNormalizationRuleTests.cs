@@ -95,7 +95,7 @@ public class CurrencyNormalizationRuleTests
     [DataRow(
         "It costs 50 EUR now.",
         "It costs  fifty euros  now.",
-        DisplayName = "Currency within sentence"
+        DisplayName = "Trailing currency code within sentence"
     )]
     [DataRow(
         "$5 and £10",
