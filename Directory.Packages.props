@@ -1,0 +1,45 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <!-- $(DotNetPackageVersion) follows the target framework; Directory.Build.targets sets it. -->
+  <ItemGroup>
+    <PackageVersion Include="DotNet.ReproducibleBuilds" Version="2.0.5" />
+    <PackageVersion Include="Humanizer.Core" Version="3.0.10" />
+    <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="$(DotNetPackageVersion)" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="5.9.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.9.0" />
+    <PackageVersion
+      Include="Microsoft.Extensions.DependencyInjection"
+      Version="$(DotNetPackageVersion)"
+    />
+    <PackageVersion
+      Include="Microsoft.Extensions.DependencyInjection.Abstractions"
+      Version="$(DotNetPackageVersion)"
+    />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="$(DotNetPackageVersion)" />
+    <PackageVersion
+      Include="Microsoft.Extensions.Logging.Abstractions"
+      Version="$(DotNetPackageVersion)"
+    />
+    <PackageVersion
+      Include="Microsoft.Extensions.Logging.Console"
+      Version="$(DotNetPackageVersion)"
+    />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="$(DotNetPackageVersion)" />
+    <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.12.0" />
+    <PackageVersion Include="Microsoft.Testing.Platform.MSBuild" Version="2.5.1" />
+    <PackageVersion Include="MinVer" Version="8.0.0" />
+    <PackageVersion Include="MSTest.Analyzers" Version="4.5.1" />
+    <PackageVersion Include="MSTest.TestAdapter" Version="4.5.1" />
+    <PackageVersion Include="MSTest.TestFramework" Version="4.5.1" />
+    <PackageVersion Include="System.Buffers" Version="4.6.1" />
+    <PackageVersion Include="System.IO.Pipelines" Version="$(DotNetPackageVersion)" />
+    <PackageVersion Include="System.Memory" Version="4.6.3" />
+    <PackageVersion Include="System.Numerics.Vectors" Version="4.6.1" />
+    <PackageVersion Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.2" />
+    <PackageVersion Include="System.Text.Encodings.Web" Version="$(DotNetPackageVersion)" />
+    <PackageVersion Include="System.Text.Json" Version="$(DotNetPackageVersion)" />
+    <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.6.3" />
+  </ItemGroup>
+</Project>
